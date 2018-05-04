@@ -1,12 +1,12 @@
 <?php
 namespace MyOrg\Controller;
-use MyOrg\Model\ApiMethod;
+use MyOrg\Model\Method;
 use SilverStripe\Admin\ModelAdmin;
 
-class ApiMethodAdmin extends ModelAdmin
+class MethodAdmin extends ModelAdmin
 {
     private static $managed_models = [
-        ApiMethod::class,
+        Method::class,
     ];
     private static $url_segment = 'api-methods';
     private static $menu_title = 'API Methods';

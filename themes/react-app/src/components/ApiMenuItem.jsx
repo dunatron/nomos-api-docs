@@ -3,21 +3,20 @@ import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import { gql, compose, graphql, withApollo } from "react-apollo/index";
 import { connect } from "react-redux";
+import {setCodeExamples} from '../actions/codeExamplesActions';
+
+
 
 
 export const GET_SINGLE_API_METHOD = gql`
-query getSingleApiMethod($ID:ID!) {
-  getSingleApiMethod(ID: $ID){
+query getSingleMethod($ID:ID!) {
+  getSingleMethod(ID: $ID){
     ID
-    Title
+    Name
     CodeExamples{
-      edges {
-        node {
-          ID
-          Title
-          CodeSample
-        }
-      }
+      ID
+      Title
+      CodeSample
     }
   }
 }
@@ -59,7 +58,7 @@ class ApiMenuItem extends Component {
             onClick={() => this.handleClick(d, i)}
             className={classes.listItem}
           >
-            <ListItemText primary={d.node.Title} />
+            <ListItemText primary={d.node.Name} />
           </ListItem>
         )}
       </List>
@@ -69,18 +68,26 @@ class ApiMenuItem extends Component {
   handleClick = (d, i) => {
     console.log("i ", i)
     console.log("d ", d)
-
+    this.fetchApiMethod(d.node.ID)
   }
 
-  fetchApiMethod = async () => {
+  fetchApiMethod = async (ID) => {
     await this.props.client.query({
       query: GET_SINGLE_API_METHOD,
       variables: {
-        ID: 1,
+        ID: ID,
       }
     })
       .then((res) => {
         console.log("res ", res)
+        const method = res.data.getSingleMethod[0]
+        const {ID, Name, CodeExamples} = method
+        console.log("ID ", ID)
+        console.log("Name ", Name)
+        console.log("code examples ", CodeExamples)
+        // ToDo: create redux reducer and actions to store the code examples
+        // The code examples will then be fed into the Tabs
+        this.props.setCodeExamples(CodeExamples)
       })
   }
 
@@ -89,6 +96,9 @@ class ApiMenuItem extends Component {
 const reduxWrapper = connect(
   state => ({
     // tags: state.tags
+  }),
+  dispatch => ({
+    setCodeExamples: (codes) => dispatch(setCodeExamples(codes)),
   })
 );
 

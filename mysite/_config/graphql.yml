@@ -11,7 +11,7 @@ SilverStripe\GraphQL\Controller:
     Allow-Methods:  'GET, POST, OPTIONS'
     Max-Age: 86400
   schema:
-    scaffolding_providers: [MyOrg\Model\ApiMethod]
+    scaffolding_providers: [MyOrg\Model\Method]
     scaffolding:
       types:
         SilverStripe\Security\Member:
@@ -28,14 +28,15 @@ SilverStripe\GraphQL\Controller:
             create: true
             read: true
           nestedQueries:
-            ApiMethods: true
-        MyOrg\Model\ApiMethod:
-          fields: [ID, Title]
+            Methods: true
+        MyOrg\Model\Method:
+          fields: [ID, Name]
           operations:
             read: true
             create: true
           nestedQueries: 
-            CodeExamples: true
+            CodeExamples:
+              paginate: false
         MyOrg\Model\CodeExample:
           fields: [ID, Title, CodeSample]
           operations:

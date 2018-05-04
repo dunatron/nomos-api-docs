@@ -62,8 +62,12 @@ class NavDrawer extends React.Component {
   };
 
   render() {
-    const { classes, edges } = this.props;
+    /**
+     * ToDo: setup drawer and Tabs to be better. Causing infinite updates etc
+     */
+    const { classes, edges, codeExamples } = this.props;
     const { anchor, value } = this.state;
+    console.log("Code examples in Nav DRAWER ", codeExamples)
     const drawer = (
       <Drawer
         variant="permanent"
@@ -99,19 +103,15 @@ class NavDrawer extends React.Component {
               </Typography>
               <Tabs
                 value={value}
-                onChange={this.handleChange}
+                onChange={(val) => this.handleChange(val)}
                 indicatorColor="primary"
                 textColor="secondary"
                 scrollable
                 scrollButtons="auto"
               >
-                <Tab label="Item One" />
-                <Tab label="Item Two" />
-                <Tab label="Item Three" />
-                <Tab label="Item Four" />
-                <Tab label="Item Five" />
-                <Tab label="Item Six" />
-                <Tab label="Item Seven" />
+                {codeExamples && codeExamples.map((d, i) => {
+                  return <Tab key={i} label={d.Title} />
+                })}
               </Tabs>
             </Toolbar>
           </AppBar>

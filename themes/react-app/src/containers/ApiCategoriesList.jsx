@@ -29,11 +29,11 @@ query getApiData {
       node {
         ID
         Name
-        ApiMethods {
+        Methods {
           edges {
             node {
               ID
-              Title
+              Name
             }
           }
         }
@@ -66,11 +66,17 @@ class ApiCategoriesList extends Component {
   }
 
   shouldComponentUpdate(nextProps) {
-    return (nextProps.getApiCategoriesWithData.loading !== this.props.getApiCategoriesWithData.loading);
+    if (nextProps.getApiCategoriesWithData.loading !== this.props.getApiCategoriesWithData.loading){
+      return true
+    }
+    if(nextProps.codeExamples !== this.props.codeExamples){
+      return true
+    }
+    return false
   }
 
   render() {
-    const { getApiCategoriesWithData: { loading, readCategories } } = this.props;
+    const { getApiCategoriesWithData: { loading, readCategories }, codeExamples } = this.props;
     console.log('PROPS ', this.props)
 
     if (loading) {
@@ -80,14 +86,14 @@ class ApiCategoriesList extends Component {
     const { edges } = readCategories
 
     return (
-      <NavDrawer edges={edges}/>
+      <NavDrawer edges={edges} codeExamples={codeExamples}/>
     )
   }
 }
 
 const reduxWrapper = connect(
   state => ({
-    tags: state.tags
+    codeExamples: state.codeExamples.codeExamples
   })
 );
 

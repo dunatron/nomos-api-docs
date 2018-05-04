@@ -10,7 +10,7 @@ class Category extends DataObject
     ];
 
     private static $has_many = [
-        'ApiMethods' => ApiMethod::class,
+        'Methods' => Method::class,
     ];
 
     private static $default_sort = 'Created DESC';

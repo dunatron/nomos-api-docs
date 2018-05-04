@@ -63,7 +63,7 @@ class CategoryItem extends Component {
       </ListItem>
       <Collapse component="li" in={this.state.open} timeout="auto" unmountOnExit={false}>
         {/* <SecondaryCategories categories={SecondaryTags} updateCheckNumber={(num)=> this.changeNumberChecked(num)} /> */}
-        {node.ApiMethods.edges.length >= 1 && <ApiMenuItem methodList={node.ApiMethods} />}
+        {node.Methods.edges.length >= 1 && <ApiMenuItem methodList={node.Methods} />}
       </Collapse>
     </List>
 

@@ -9,7 +9,7 @@ use SilverStripe\Assets\Image;
 use SilverStripe\Security\Member;
 
 
-class CodeExample extends DataObject
+class CodeExample extends DataObject implements ScaffoldingProvider
 {
     private static $db = [
         'Title' => 'Varchar(255)',
@@ -17,7 +17,7 @@ class CodeExample extends DataObject
     ];
 
     private static $has_one = [
-        'ApiMethod' => ApiMethod::class
+        'Method' => Method::class
     ];
 
     private static $default_sort = 'Created DESC';
@@ -30,6 +30,23 @@ class CodeExample extends DataObject
     public function onAfterWrite()
     {
         parent::onAfterWrite();
+    }
+
+    public function provideGraphQLScaffolding(SchemaScaffolder $scaffolder)
+    {
+        $scaffolder
+            ->query('readCodeExamples', __CLASS__)
+            ->addArgs([
+                //'ID' => 'ID!'
+            ])
+            ->setResolver(function ($object, array $args, $context, ResolveInfo $info){
+                $codeExamples = self::get();
+                return $codeExamples;
+            })
+            ->setUsePagination(false)
+            ->end();
+
+        return $scaffolder;
     }
 
 }
