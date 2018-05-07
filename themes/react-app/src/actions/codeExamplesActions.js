@@ -1,6 +1,6 @@
-export function setCodeExamples(codes) {
+export function setCurrentMethod(method) {
   return {
-    type: "SET_CODE_EXAMPLES",
-    payload: codes
+    type: "SET_CURRENT_METHOD",
+    payload: method
   }
 }

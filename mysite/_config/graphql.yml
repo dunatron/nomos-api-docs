@@ -30,16 +30,23 @@ SilverStripe\GraphQL\Controller:
           nestedQueries:
             Methods: true
         MyOrg\Model\Method:
-          fields: [ID, Name]
+          fields: [ID, Name, Description, HttpRequest, PermittedCall]
           operations:
             read: true
             create: true
           nestedQueries: 
             CodeExamples:
               paginate: false
+            QueryParams:
+              paginate: false
         MyOrg\Model\CodeExample:
           fields: [ID, Title, CodeSample]
           operations:
+            read: true
+            create: true
+        MyOrg\Model\QueryParam: 
+          fields: [Parameter, Description]
+          operations: 
             read: true
             create: true
   # Enforce HTTP basic authentication for GraphQL requests

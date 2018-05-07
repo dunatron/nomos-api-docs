@@ -30,6 +30,9 @@ class Method extends DataObject implements ScaffoldingProvider
 {
     private static $db = [
         'Name' => 'Varchar(255)',
+        'Description' => 'Text', 
+        'HttpRequest' => 'Varchar(255)',
+        'PermittedCall' => 'Text',
     ];
 
     private static $has_one = [
@@ -37,7 +40,8 @@ class Method extends DataObject implements ScaffoldingProvider
     ];
 
     private static $has_many =[
-        'CodeExamples' => CodeExample::class
+        'CodeExamples' => CodeExample::class,
+        'QueryParams' => QueryParam::class
     ];
 
     private static $default_sort = 'Created DESC';

@@ -4,16 +4,12 @@ import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
 import Drawer from 'material-ui/Drawer';
 import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
 import List from 'material-ui/List';
-import { MenuItem } from 'material-ui/Menu';
-import Tabs, { Tab } from 'material-ui/Tabs';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
 import Divider from 'material-ui/Divider';
 import CategoryItem from './CategoryItem';
-import MainLeft from './MainLeft';
-import MainRight from './MainRight';
+import MainContainer from '../containers/MainContainer';
+import SettingsList from './SettingsList';
+import CodeHighlighterSettings from './CodeHighlighterSettings';
 
 const drawerWidth = 240;
 
@@ -44,10 +40,12 @@ const styles = theme => ({
   },
   toolbar: theme.mixins.toolbar,
   content: {
+    width: `calc(100% - ${drawerWidth}px)`,
     display: "flex",
+    height: "100vh",
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
-    padding: theme.spacing.unit * 3,
+    padding: 0,
   },
 });
 
@@ -80,13 +78,16 @@ class NavDrawer extends React.Component {
           <h1>Nomos Logo</h1>
         </div>
         <Divider />
+        <List>
+          <SettingsList />
+          {/* <CodeHighlighterSettings /> */}
+        </List>
+        <Divider />
         {edges && edges.map((d, i) =>
           <CategoryItem listValue={d} key={i} />
         )}
         <Divider />
-        <List>
-          <li>List Item</li>
-        </List>
+
       </Drawer>
     );
 
@@ -95,30 +96,11 @@ class NavDrawer extends React.Component {
         <div className={classes.appFrame}>
           <AppBar
             position="absolute"
-            className={classNames(classes.appBar, classes[`appBar-${anchor}`])}
-          >
-            <Toolbar>
-              <Typography variant="title" color="inherit" noWrap>
-                Permanent drawer
-              </Typography>
-              <Tabs
-                value={value}
-                onChange={(val) => this.handleChange(val)}
-                indicatorColor="primary"
-                textColor="secondary"
-                scrollable
-                scrollButtons="auto"
-              >
-                {codeExamples && codeExamples.map((d, i) => {
-                  return <Tab key={i} label={d.Title} />
-                })}
-              </Tabs>
-            </Toolbar>
+            className={classNames(classes.appBar, classes[`appBar-${anchor}`])}>
           </AppBar>
           {drawer}
           <main className={classes.content}>
-            <MainLeft />
-            <MainRight />
+            <MainContainer />
           </main>
         </div>
       </div>

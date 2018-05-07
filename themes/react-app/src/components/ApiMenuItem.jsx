@@ -3,7 +3,7 @@ import { withStyles } from 'material-ui/styles';
 import List, { ListItem, ListItemText } from 'material-ui/List';
 import { gql, compose, graphql, withApollo } from "react-apollo/index";
 import { connect } from "react-redux";
-import {setCodeExamples} from '../actions/codeExamplesActions';
+import { setCurrentMethod } from '../actions/codeExamplesActions';
 
 
 
@@ -13,10 +13,17 @@ query getSingleMethod($ID:ID!) {
   getSingleMethod(ID: $ID){
     ID
     Name
+    Description
+    HttpRequest
+    PermittedCall
     CodeExamples{
       ID
       Title
       CodeSample
+    }
+    QueryParams {
+      Parameter
+      Description
     }
   }
 }
@@ -81,13 +88,9 @@ class ApiMenuItem extends Component {
       .then((res) => {
         console.log("res ", res)
         const method = res.data.getSingleMethod[0]
-        const {ID, Name, CodeExamples} = method
-        console.log("ID ", ID)
-        console.log("Name ", Name)
-        console.log("code examples ", CodeExamples)
-        // ToDo: create redux reducer and actions to store the code examples
-        // The code examples will then be fed into the Tabs
-        this.props.setCodeExamples(CodeExamples)
+        // This is sent to redux and deconstructed as store object there
+        // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method
+        this.props.setCurrentMethod(method)
       })
   }
 
@@ -98,7 +101,7 @@ const reduxWrapper = connect(
     // tags: state.tags
   }),
   dispatch => ({
-    setCodeExamples: (codes) => dispatch(setCodeExamples(codes)),
+    setCurrentMethod: (method) => dispatch(setCurrentMethod(method))
   })
 );
 

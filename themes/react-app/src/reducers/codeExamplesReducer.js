@@ -1,13 +1,19 @@
 const defaultState = {
-  codeExamples: []
+  Name: undefined,
+  Description: undefined,
+  HttpRequest: undefined,
+  PermittedCall: undefined,
+  QueryParams: [],
+  CodeExamples: [],
 };
 export default (state = defaultState, action) => {
   switch (action.type) {
-    case 'SET_CODE_EXAMPLES':
+    case 'SET_CURRENT_METHOD':
+      const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = action.payload
       return {
         ...state,
-        codeExamples: action.payload
-      };
+        ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams
+      }
     default:
       return state;
   }
