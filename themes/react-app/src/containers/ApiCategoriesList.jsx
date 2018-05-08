@@ -5,6 +5,7 @@ import Loader from '../components/Loader';
 import { connect } from "react-redux";
 import { withApollo } from "react-apollo/index";
 import { setTokenIsValid } from '../actions/tokenActions'
+import {withRouter} from 'react-router'
 
 // Components
 import NavDrawer from '../components/NavDrawer'
@@ -125,6 +126,7 @@ const reduxWrapper = connect(
 );
 
 export default compose(
+  withRouter,
   withApollo,
   reduxWrapper,
   graphql(ALL_API_CATEGORIES_WITH_DATA, { name: 'getApiCategoriesWithData' }),

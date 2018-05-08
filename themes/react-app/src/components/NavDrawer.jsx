@@ -11,8 +11,10 @@ import MainContainer from '../containers/MainContainer';
 import CreateDocsContainer from '../containers/CreateDocsContainer';
 import LoginContainer from '../containers/JWTLoginForm'
 import SettingsList from './SettingsList';
+import NavBar from './NavBar';
 import CodeHighlighterSettings from './CodeHighlighterSettings';
-import { BrowserRouter, Route, Switch, Link, withRouter } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import {withRouter} from 'react-router'
 import { withApollo, compose } from "react-apollo/index";
 
 const drawerWidth = 240;
@@ -46,7 +48,9 @@ const styles = theme => ({
   content: {
     width: `calc(100% - ${drawerWidth}px)`,
     display: "flex",
-    height: "100vh",
+    //height: "100vh"
+    height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
+    marginTop: theme.spacing.unit * 6,
     flexGrow: 1,
     backgroundColor: theme.palette.background.default,
     padding: 0,
@@ -104,15 +108,19 @@ class NavDrawer extends React.Component {
           <AppBar
             position="absolute"
             className={classNames(classes.appBar, classes[`appBar-${anchor}`])}>
+            <NavBar />
           </AppBar>
+
           {drawer}
+
           <main className={classes.content}>
             <Switch>
               <Route exact path='/' component={MainContainer} />
-              <Route exact path='/create' component={CreateDocsContainer} />
+              <Route path='/create' component={CreateDocsContainer} />
             </Switch>
             {/* <MainContainer /> */}
           </main>
+
         </div>
       </div>
     );
@@ -143,11 +151,11 @@ NavDrawer.propTypes = {
 
 // export default withStyles(styles)(NavDrawer);
 
-// export default compose(
-//   withRouter,
-//   withStyles(styles),
-// )(NavDrawer)
-
-export default withRouter(compose(
-  withStyles(styles)
-)(NavDrawer));
+export default compose(
+  withRouter,
+  withStyles(styles),
+)(NavDrawer)
+//
+// export default withRouter(compose(
+//   withStyles(styles)
+// )(NavDrawer));

@@ -12,8 +12,9 @@ const styles = theme => ({
     flexBasis: 0,
     minWidth: "50%",
     backgroundColor: theme.palette.background.paper,
-    // height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
-    height: '100vh',
+    height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
+    // marginTop: theme.spacing.unit * 6,
+    // height: '100vh',
     textAlign: 'left'
   },
 });

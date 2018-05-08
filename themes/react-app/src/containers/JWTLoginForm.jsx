@@ -88,7 +88,7 @@ class JWTLoginForm extends Component {
   }
 
   logoutBtn = (name) => {
-    return <Button raised color="primary" type="submit" onClick={() => this.logout()}>Log Out {name}</Button>
+    return <Button variant="raised" color="primary" type="submit" onClick={() => this.logout()}>Log Out {name}</Button>
   }
 
   logout = () => {
