@@ -4,7 +4,7 @@ import List, { ListItem, ListItemText } from 'material-ui/List';
 import { gql, compose, graphql, withApollo } from "react-apollo/index";
 import { connect } from "react-redux";
 import { setCurrentMethod } from '../actions/codeExamplesActions';
-
+import {withRouter} from 'react-router'
 
 
 
@@ -92,6 +92,9 @@ class ApiMenuItem extends Component {
         // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method
         this.props.setCurrentMethod(method)
       })
+      .then(() => {
+        this.props.history.push('/')
+      })
   }
 
 }
@@ -106,6 +109,7 @@ const reduxWrapper = connect(
 );
 
 export default compose(
+  withRouter,
   withStyles(styles),
   withApollo,
   reduxWrapper,
