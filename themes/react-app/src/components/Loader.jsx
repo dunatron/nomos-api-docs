@@ -30,33 +30,17 @@ class Loader extends React.Component {
   };
 
   render() {
-    const { classes } = this.props;
+    const { classes, loadingText, size, fontSize } = this.props;
     return (
       <div>
         <CircularProgress
           className={classes.progress}
-          variant="determinate"
-          value={this.state.completed}
-        />
-        <CircularProgress
-          className={classes.progress}
-          variant="determinate"
-          size={50}
-          value={this.state.completed}
-        />
-        <CircularProgress
-          className={classes.progress}
           color="secondary"
           variant="determinate"
+          size={size ? size : 50}
           value={this.state.completed}
         />
-        <CircularProgress
-          className={classes.progress}
-          color="secondary"
-          variant="determinate"
-          size={50}
-          value={this.state.completed}
-        />
+        <p style={{fontSize: `${fontSize ? fontSize : 18}px`}}>{loadingText ? loadingText : 'loading...'}</p>
       </div>
     );
   }
@@ -64,6 +48,9 @@ class Loader extends React.Component {
 
 Loader.propTypes = {
   classes: PropTypes.object.isRequired,
+  loadingText: PropTypes.string,
+  size: PropTypes.number, 
+  fontSize: PropTypes.number
 };
 
 export default withStyles(styles)(Loader);

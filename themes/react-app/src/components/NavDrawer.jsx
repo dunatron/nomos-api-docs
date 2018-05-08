@@ -8,8 +8,12 @@ import List from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import CategoryItem from './CategoryItem';
 import MainContainer from '../containers/MainContainer';
+import CreateDocsContainer from '../containers/CreateDocsContainer';
+import LoginContainer from '../containers/JWTLoginForm'
 import SettingsList from './SettingsList';
 import CodeHighlighterSettings from './CodeHighlighterSettings';
+import { BrowserRouter, Route, Switch, Link, withRouter } from 'react-router-dom';
+import { withApollo, compose } from "react-apollo/index";
 
 const drawerWidth = 240;
 
@@ -63,7 +67,7 @@ class NavDrawer extends React.Component {
     /**
      * ToDo: setup drawer and Tabs to be better. Causing infinite updates etc
      */
-    const { classes, edges, codeExamples } = this.props;
+    const { classes, edges, codeExamples, validToken } = this.props;
     const { anchor, value } = this.state;
     console.log("Code examples in Nav DRAWER ", codeExamples)
     const drawer = (
@@ -78,6 +82,9 @@ class NavDrawer extends React.Component {
           <h1>Nomos Logo</h1>
         </div>
         <Divider />
+        <LoginContainer />
+        <Divider />
+        {validToken ? this.renderAdminButtons() : null}
         <List>
           <SettingsList />
           {/* <CodeHighlighterSettings /> */}
@@ -100,12 +107,33 @@ class NavDrawer extends React.Component {
           </AppBar>
           {drawer}
           <main className={classes.content}>
-            <MainContainer />
+            <Switch>
+              <Route exact path='/' component={MainContainer} />
+              <Route exact path='/create' component={CreateDocsContainer} />
+            </Switch>
+            {/* <MainContainer /> */}
           </main>
         </div>
       </div>
     );
   }
+
+  handlePageChange = (url) => {
+    console.log(url);
+    //this.props.history.push(`/`)
+    this.props.history.push(url)
+    this.forceUpdate()
+  };
+
+  renderAdminButtons = () => {
+    return (
+      <div>
+        <div onClick={() => this.handlePageChange("/")}>Main Docs</div>
+        <div onClick={() => this.handlePageChange("/create")}>Create Docs</div>
+      </div>
+    )
+  }
+
 }
 
 NavDrawer.propTypes = {
@@ -113,4 +141,13 @@ NavDrawer.propTypes = {
   edges: PropTypes.array
 };
 
-export default withStyles(styles)(NavDrawer);
+// export default withStyles(styles)(NavDrawer);
+
+// export default compose(
+//   withRouter,
+//   withStyles(styles),
+// )(NavDrawer)
+
+export default withRouter(compose(
+  withStyles(styles)
+)(NavDrawer));
