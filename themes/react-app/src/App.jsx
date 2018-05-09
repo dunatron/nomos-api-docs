@@ -10,7 +10,6 @@ import { withStyles } from 'material-ui/styles';
 import {compose} from 'react-apollo';
 import ApiCategoriesList from './containers/ApiCategoriesList'
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
-import createBrowserHistory from 'history/createBrowserHistory'
 import {withRouter} from 'react-router'
 
 // Components
@@ -31,14 +30,12 @@ const styles = {
   }
 };
 
-const history = createBrowserHistory()
-
 class App extends Component {
   render() {
 
     const { classes } = this.props;
     return (
-      <BrowserRouter history={history}>
+      <BrowserRouter>
       <div className="App">
         <ApiCategoriesList />
       </div>

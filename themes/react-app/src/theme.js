@@ -7,16 +7,16 @@ const theme = {
     },
     "type": "light",
     "primary": {
-      light: "#ff5c8d",
-      main: "#e10098",
-      dark: "#d81b60",
+      light: "#3a747d",
+      main: "#004851",
+      dark: "#002029",
       contrastText: "#fff"
     },
     "secondary": {
-      light: "#8558da",
-      main: "#512ca8",
-      dark: "#140078",
-      contrastText: "#fff"
+      light: "#61e1ff",
+      main: "#00afd7",
+      dark: "#007fa5",
+      contrastText: "#000000"
     },
     "error": {
       light: "#e57373",

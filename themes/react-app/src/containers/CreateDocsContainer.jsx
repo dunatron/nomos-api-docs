@@ -6,6 +6,8 @@ import Button from 'material-ui/Button';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import {withRouter} from 'react-router'
 import AddCategory from '../components/AddCategory';
+import AddMethod from '../components/AddMethod';
+import AddCodeSample from '../components/AddCodeSample';
 
 const styles = theme => ({
   root: {
@@ -35,8 +37,8 @@ class CreateDocsContainer extends Component {
           render={() => (
             <Fragment>
               <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handlePageChange('/create/category')} >Add Category</Button>
-              <Button className={classes.button} variant="raised" color="primary" type="submit">Add API Method</Button>
-              <Button className={classes.button} variant="raised" color="primary" type="submit">Add Code Sample</Button>
+              <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handlePageChange('/create/method')}>Add API Method</Button>
+              <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handlePageChange('/create/code-sample')}>Add Code Sample</Button>
             </Fragment>
           )}
         />
@@ -47,6 +49,15 @@ class CreateDocsContainer extends Component {
           path={match.url + '/category'}
           component={AddCategory}
         />
+        <Route
+          path={match.url + '/method'}
+          component={AddMethod}
+        />
+        <Route
+          path={match.url + '/code-sample'}
+          component={AddCodeSample}
+        />
+        
         {/*
         ToDo: react router /create/category || /create/method || /create/code-sample
         */}

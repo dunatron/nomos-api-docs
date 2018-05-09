@@ -8,7 +8,7 @@ import CodeSample from './CodeSample';
 
 function TabContainer(props) {
   return (
-    <Typography component="div" style={{ padding: 0, height: `calc(100vh - 48px)` }}>
+    <Typography component="div" style={{ padding: 0, height: `calc(100vh - 96px)` }}>
       {props.children}
     </Typography>
   );

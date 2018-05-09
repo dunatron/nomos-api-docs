@@ -44,4 +44,14 @@ class QueryParam extends DataObject
         return true;
     }
 
+    public function canCreate($member = null, $context = array())
+    {
+//        $extended = $this->extendedCan(__FUNCTION__, $member, $context);
+//        if ($extended !== null) {
+//            return $extended;
+//        }
+//        return Permission::check('ADMIN', 'any', $member);
+        return true;
+    }
+
 }

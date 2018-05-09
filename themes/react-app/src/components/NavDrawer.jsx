@@ -7,6 +7,7 @@ import AppBar from 'material-ui/AppBar';
 import List from 'material-ui/List';
 import Divider from 'material-ui/Divider';
 import CategoryItem from './CategoryItem';
+import NomosLogo from '../img/nomos-logo.png';
 import MainContainer from '../containers/MainContainer';
 import CreateDocsContainer from '../containers/CreateDocsContainer';
 import LoginContainer from '../containers/JWTLoginForm'
@@ -44,7 +45,9 @@ const styles = theme => ({
     position: 'relative',
     width: drawerWidth,
   },
-  toolbar: theme.mixins.toolbar,
+  toolbar: {
+
+  },
   content: {
     width: `calc(100% - ${drawerWidth}px)`,
     display: "flex",
@@ -83,7 +86,7 @@ class NavDrawer extends React.Component {
         anchor={anchor}
       >
         <div className={classes.toolbar} >
-          <h1>Nomos Logo</h1>
+        <img src={NomosLogo} className="nomos-logo" alt="nomos logo" />
         </div>
         <Divider />
         <LoginContainer />
