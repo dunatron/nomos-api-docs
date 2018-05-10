@@ -40,9 +40,15 @@ SilverStripe\GraphQL\Controller:
             QueryParams:
               paginate: false
         MyOrg\Model\CodeExample:
-          fields: [ID, Title, CodeSample]
+          fields: [ID, LanguageName, CodeSample, MethodID]
           operations:
             read: true
+            create: true
+        MyOrg\Model\Language:
+          fields: [ID, Name]
+          operations:
+            read: 
+              paginate: false
             create: true
         MyOrg\Model\QueryParam: 
           fields: [Parameter, Description]

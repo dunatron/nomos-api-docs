@@ -65,7 +65,7 @@ class MainRight extends React.Component {
           >
 
             {CodeExamples && CodeExamples.map((d, i) => {
-              return <Tab key={i} label={d.Title} />
+              return <Tab key={i} label={d.LanguageName} />
             })}
             {/* <Tab label="Item One" />
             <Tab label="Item Two" />

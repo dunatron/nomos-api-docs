@@ -12,12 +12,12 @@ use SilverStripe\Security\Member;
 class CodeExample extends DataObject implements ScaffoldingProvider
 {
     private static $db = [
-        'Title' => 'Varchar(255)',
+        'LanguageName' => 'Varchar(255)',
         'CodeSample' => 'Text'
     ];
 
     private static $has_one = [
-        'Method' => Method::class
+        'Method' => Method::class, 
     ];
 
     private static $default_sort = 'Created DESC';

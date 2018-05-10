@@ -18,7 +18,7 @@ query getSingleMethod($ID:ID!) {
     PermittedCall
     CodeExamples{
       ID
-      Title
+      LanguageName
       CodeSample
     }
     QueryParams {

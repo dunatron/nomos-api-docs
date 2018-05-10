@@ -5,9 +5,16 @@ import { connect } from "react-redux";
 import Button from 'material-ui/Button';
 import BackButton from './BackButton';
 import TextField from 'material-ui/TextField';
+import Input, { InputLabel } from 'material-ui/Input';
+import { MenuItem } from 'material-ui/Menu';
+import { FormControl, FormHelperText } from 'material-ui/Form';
+import Select from 'material-ui/Select';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { withRouter } from 'react-router'
 import { ALL_API_CATEGORIES_WITH_DATA } from '../containers/ApiCategoriesList'
+import Loader from './Loader';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import classNames from 'classnames';
 
 const styles = theme => ({
   root: {
@@ -19,33 +26,83 @@ const styles = theme => ({
   },
   button: {
     borderRadius: 0
-  }
+  },
+  codeEditor: {
+    display: 'flex'
+  },
+  editorField: {
+    flex: '1 1 0'
+  },
 });
 
 class AddCodeSample extends Component {
 
   state = {
-    Name: ""
+    LanguageName: "",
+    CodeSample: ""
   };
 
   render() {
-    const { classes, match } = this.props
+    const { classes, fetchLanguages: { readLanguages, loading } } = this.props
+    const {LanguageName} = this.state
+
+    if (loading) {
+      return <Loader fontSize={18} size={22} loadingText={'fetching language types'} />
+    }
+
+    console.log('Fetched langues data ', readLanguages)
 
     return (
       <div className={classes.root}>
         <BackButton />
         <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this.addCategory(e)}>
+          {this.selectLanguage(readLanguages)}
+          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCategory(e)} >Add Code Sample</Button>
+        </form>
+        <div className={classes.codeEditor}>
+          <SyntaxHighlighter
+            className={classes.editorField}
+            language={LanguageName.length >=1 ? LanguageName : 'javascript'}
+            //style={this.props.style}
+            style={{...this.props.style,...{fontSize: `${this.props.fontSize}px`}}}
+            showLineNumbers={this.props.showLineNumbers}>
+            {this.state.CodeSample}
+          </SyntaxHighlighter>
           <TextField
-            id="Name"
-            label="Name"
-            className={classes.textField}
-            value={this.state.Name}
-            onChange={this.handleChange('Name')}
+            id="CodeSample"
+            style={{fontSize: `${this.props.fontSize}px`}}
+            className={classNames(classes.textField, classes.editorField)}
+            value={this.state.CodeSample}
+            onChange={this.handleChange('CodeSample')}
+            label="Code Sample"
+            placeholder="Enter your code here"
+            multiline
             margin="normal"
           />
-          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCategory(e)} >Add Category</Button>
-        </form>
+        </div>
       </div>
+    )
+  }
+
+  selectLanguage = (langues) => {
+    const { classes } = this.props
+    return (
+      <FormControl className={classes.formControl}>
+        <InputLabel htmlFor="category">Language</InputLabel>
+        <Select
+          value={this.state.LanguageName}
+
+          onChange={this.handleChange('LanguageName')}
+          inputProps={{
+            name: 'LanguageName',
+            id: 'LanguageName',
+          }}
+        >
+          {langues.map((d, i) => {
+            return <MenuItem value={d.Name}>{d.Name}</MenuItem>
+          })}
+        </Select>
+      </FormControl>
     )
   }
 
@@ -55,54 +112,17 @@ class AddCodeSample extends Component {
     });
   };
 
-  handleBackAction = () => {
-    this.props.history.goBack()
-  }
-
-  addCategory = async (e) => {
-    e.preventDefault()
-    console.log('ADDING NEW CATEGORY ', this.state.Name)
-    this.handleBackAction()
-  }
-
-  _createCategory = async (e) => {
-    e.preventDefault()
-    const { Name } = this.state;
-
-    await this.props.createCategoryMutation({
-      variables: {
-        Name
-      },
-      update: (store, { data: { createCategory } }) => {
-        console.group('Update InMemoryCache')
-        console.log('store ', store)
-        console.log('create Category ', createCategory)
-
-        //createCategory.Methods.edges = []
-
-        const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
-        console.log('Store read query ', data)
-        data.readCategories.edges.splice(0, 0, { node: createCategory })
-        store.writeQuery({
-          query: ALL_API_CATEGORIES_WITH_DATA,
-          data
-        })
-        console.groupEnd()
-      }
-    });
-
-    this.handleBackAction()
-  }
-
 }
 
 const reduxWrapper = connect(
   state => ({
-    CurrentMethod: state.codeExamples
+    fontSize: state.higlightStyle.fontSize,
+    style: state.higlightStyle.style,
+    showLineNumbers: state.higlightStyle.showLineNumbers
   })
 );
 
-const CREATE_CATEGORY_MUTATION = gql`
+const CREATE_CODE_SAMPLE_MUTATION = gql`
 mutation CreateLinkMutation($Name: String) {
   createCategory(Input: {
     Name: $Name
@@ -121,8 +141,17 @@ mutation CreateLinkMutation($Name: String) {
 }
 `;
 
+const FETCH_LANGUAGES = gql`
+query readLanguages {
+  readLanguages {
+    Name
+  }
+}
+`
+
 export default compose(
-  graphql(CREATE_CATEGORY_MUTATION, { name: 'createCategoryMutation' }),
+  graphql(CREATE_CODE_SAMPLE_MUTATION, { name: 'createCodeSampleMutation' }),
+  graphql(FETCH_LANGUAGES, { name: 'fetchLanguages' }),
   withRouter,
   withStyles(styles),
   withApollo,
