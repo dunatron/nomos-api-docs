@@ -51,7 +51,7 @@ const styles = theme => ({
   content: {
     width: `calc(100% - ${drawerWidth}px)`,
     display: "flex",
-    //height: "100vh"
+    overflow: 'auto',
     height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
     marginTop: theme.spacing.unit * 6,
     flexGrow: 1,

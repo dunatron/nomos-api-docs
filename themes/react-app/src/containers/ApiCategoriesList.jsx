@@ -10,20 +10,6 @@ import { withRouter } from 'react-router'
 // Components
 import NavDrawer from '../components/NavDrawer'
 
-// const ALL_TAGS_QUERY = gql`
-// query getCategories {
-//   readHappTags {
-//     ID
-//     Title
-//     SecondaryTags {
-//       Title
-//       Checked
-//       HappTagID
-//     }
-//   }
-// }
-// `;
-
 export const ALL_API_CATEGORIES_WITH_DATA = gql`
 query getApiData {
   readCategories {
@@ -57,39 +43,7 @@ query validateToken {
 
 
 class ApiCategoriesList extends Component {
-
-  // fetchTags = async () => {
-  //   // 1. Place Component into loading mode
-  //   this.props.dispatch(startFetchTags());
-  //   // 2. Start Fetching the tags
-  //   this.props.client.query({
-  //     query: ALL_TAGS_QUERY,
-  //   })
-  //   // 3. tags have been fetched, do something with them
-  //     .then((res) => {
-  //       this.props.dispatch(fetchTags(res.data.readHappTags));
-  //     })
-  // };
-
-  componentWillMount() {
-    // this.fetchTags().then(() => {
-
-    // })
-  }
-
-  // shouldComponentUpdate(nextProps) {
-  //   if (nextProps.getApiCategoriesWithData.loading !== this.props.getApiCategoriesWithData.loading) {
-  //     return true
-  //   }
-  //   if (nextProps.codeExamples !== this.props.codeExamples) {
-  //     return true
-  //   }
-  //   if (nextProps.token !== this.props.token) {
-  //     return true
-  //   }
-  //   return false
-  // }
-
+  
   render() {
     const { getApiCategoriesWithData: { loading, readCategories }, token, codeExamples, validToken, setTokenIsValid } = this.props;
     console.log('PROPS ', this.props)
@@ -105,6 +59,8 @@ class ApiCategoriesList extends Component {
     if (token && this.props.validateToken.validateToken.Valid) {
       setTokenIsValid()
     }
+
+    console.log("Reading Categories for APP DATA ", readCategories)
 
     const { edges } = readCategories
 

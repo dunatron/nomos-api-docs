@@ -12,14 +12,21 @@ import Select from 'material-ui/Select';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { withRouter } from 'react-router'
 import { ALL_API_CATEGORIES_WITH_DATA } from '../containers/ApiCategoriesList'
+import AddQueryParam from './AddQueryParam'
+import IconButton from 'material-ui/IconButton';
+import TrashIcon from 'material-ui-icons/Remove';
+import classNames from 'classnames';
 
 const styles = theme => ({
   root: {
+    padding: theme.spacing.unit * 4,
     textAlign: 'left'
   },
   formContainer: {
     display: 'flex',
     flexWrap: 'wrap',
+    flexDirection: 'column',
+    padding: theme.spacing.unit * 4
   },
   button: {
     borderRadius: 0
@@ -31,6 +38,15 @@ const styles = theme => ({
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
   },
+  paramRow: {
+    display: 'flex',
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent: 'space-between'
+  },
+  paramRowItem: {
+    //flexGrow: 1
+  }
 });
 
 class AddMethod extends Component {
@@ -40,7 +56,8 @@ class AddMethod extends Component {
     Name: "",
     Description: "",
     HttpRequest: "",
-    PermittedCall: ""
+    PermittedCall: "",
+    QueryParameters: []
   };
 
   render() {
@@ -102,16 +119,49 @@ class AddMethod extends Component {
             onChange={this.handleChange('PermittedCall')}
             margin="normal"
           />
+          {this.renderCurrentParams()}
+          <AddQueryParam addParam={({ paramName, paramDescription }) => this._addParam({ paramName, paramDescription })} />
           <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCategory(e)} >Add Api Method</Button>
         </form>
       </div>
     )
   }
 
+  renderCurrentParams = () => {
+    const { classes } = this.props
+    return this.state.QueryParameters.map((d, i) => {
+      return (
+        <div className={classes.paramRow}>
+          <span className={classes.paramRowItem}>{d.Parameter}</span>
+          <span className={classes.paramRowItem}>{d.Description}</span>
+          <IconButton className={classNames(classes.button, classes.paramRowItem)} aria-label="Delete" color="primary" onClick={() =>
+            this._removeParam(i)}>
+            <TrashIcon />
+          </IconButton>
+        </div>
+      )
+    })
+  }
+
+
+  _addParam = ({ paramName, paramDescription }) => {
+    let newParam = { Parameter: paramName, Description: paramDescription }
+    const queryParams = this.state.QueryParameters.concat(newParam)
+    this.setState({
+      QueryParameters: queryParams
+    })
+  }
+
+  _removeParam = (index) => {
+    let params = this.state.QueryParameters
+    params.splice(index, 1)
+    this.setState({
+      QueryParameters: params
+    })
+  }
+
 
   handleSelectChange = (name, value) => {
-    console.log('Handel select Change Name: ', name)
-    console.log('Handel select Change Value: ', value)
     this.setState({ name: value });
   };
 
@@ -127,14 +177,16 @@ class AddMethod extends Component {
 
   addCategory = async (e) => {
     e.preventDefault()
-    console.log('ADDING NEW CATEGORY ', this.state.Name)
     this.handleBackAction()
   }
 
+
+
   _createCategory = async (e) => {
     e.preventDefault()
-    const { Name, CategoryID, Description, HttpRequest, PermittedCall } = this.state;
-
+    const { Name, CategoryID, Description, HttpRequest, PermittedCall, QueryParameters } = this.state;
+    let newMethodID
+    // 1. create new method 
     await this.props.createMethodMutation({
       variables: {
         CategoryID,
@@ -143,25 +195,17 @@ class AddMethod extends Component {
         HttpRequest,
         PermittedCall
       },
+      // 2. update our cache with new method
       update: (store, { data: { createMethod } }) => {
-        console.group('Update InMemoryCache')
-        console.log('store ', store)
-        console.log('create Method ', createMethod)
-
-        //createCategory.Methods.edges = []
-
+        newMethodID = createMethod.ID
         const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
-        console.log('Store read query ', data)
-
 
         data.readCategories.edges.map((d, i) => {
           if (d.node.ID === CategoryID) {
             data.readCategories.edges[i].node.Methods.edges.splice(0, 0, { node: createMethod })
           }
         })
-        console.log('Updated Cahce splice and dice ', data)
 
-        // data.readCategories.edges.splice(0, 0, { node: createCategory })
         store.writeQuery({
           query: ALL_API_CATEGORIES_WITH_DATA,
           data
@@ -169,8 +213,24 @@ class AddMethod extends Component {
         console.groupEnd()
       }
     });
+    // 3. loop over query Params
+    QueryParameters.map((d, i) => {
+      this._createQueryParameter(d, newMethodID)
+    })
 
     this.handleBackAction()
+  }
+
+  // 4. save any QueryParameters against method
+  // No need to update cache because this data is not stored in the app
+  _createQueryParameter = async ({ Parameter, Description }, methodID) => {
+    await this.props.createQueryParamMutation({
+      variables: {
+        MethodID: methodID,
+        Parameter,
+        Description
+      }
+    })
   }
 
 }
@@ -189,7 +249,8 @@ mutation CreateMethodMutation(
   $HttpRequest:String, 
   $PermittedCall:String
   
-) {
+) 
+{
     createMethod(Input: {
       CategoryID:$CategoryID
       Name: $Name, 
@@ -212,8 +273,28 @@ mutation CreateMethodMutation(
 }
 `;
 
+const CREATE_QUERY_PARAM_MUTATION = gql`
+mutation createQueryParam(
+  $MethodID: ID!,
+  $Parameter: String, 
+  $Description: String
+) {
+  createQuery_Param(Input:{
+   MethodID: $MethodID,
+   Parameter: $Parameter,
+   Description: $Description
+ }) {
+     Parameter
+     Description
+   }
+ }
+`;
+
+
+
 export default compose(
   graphql(CREATE_METHOD_MUTATION, { name: 'createMethodMutation' }),
+  graphql(CREATE_QUERY_PARAM_MUTATION, { name: 'createQueryParamMutation' }),
   withRouter,
   withStyles(styles),
   withApollo,
