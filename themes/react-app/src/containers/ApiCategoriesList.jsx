@@ -4,7 +4,7 @@ import Loader from '../components/Loader';
 
 import { connect } from "react-redux";
 import { withApollo } from "react-apollo/index";
-import { setTokenIsValid } from '../actions/tokenActions'
+import { setTokenIsValid, setTokenIsNotValid } from '../actions/tokenActions'
 import { withRouter } from 'react-router'
 
 // Components
@@ -60,9 +60,14 @@ class ApiCategoriesList extends Component {
       setTokenIsValid()
     }
 
+    if (token && this.props.validateToken.validateToken.Valid === false) {
+      setTokenIsNotValid()
+    }
+
     console.log("Reading Categories for APP DATA ", readCategories)
 
-    const { edges } = readCategories
+    //const { edges = [] } = readCategories || {}
+    const edges = []
 
     return (
       <NavDrawer edges={edges} codeExamples={codeExamples} validToken={validToken} />
@@ -78,6 +83,7 @@ const reduxWrapper = connect(
   }),
   dispatch => ({
     setTokenIsValid: () => dispatch(setTokenIsValid()),
+    setTokenIsNotValid: () => dispatch(setTokenIsNotValid())
   })
 );
 

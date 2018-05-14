@@ -15,23 +15,39 @@ import { ALL_API_CATEGORIES_WITH_DATA } from '../containers/ApiCategoriesList'
 import Loader from './Loader';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import classNames from 'classnames';
+import CodeSample from './CodeSample'
 
 const styles = theme => ({
   root: {
-    textAlign: 'left'
+    padding: theme.spacing.unit * 4,
+    textAlign: 'left',
+    width: '100%', 
+    boxSizing: 'border-box'
   },
   formContainer: {
+    padding: `${theme.spacing.unit * 4}px 0`,
+    height: theme.spacing.unit * 6,
     display: 'flex',
     flexWrap: 'wrap',
+    justifyContent: 'space-around'
+  },
+  formControl: {
+    minWidth: '180px'
   },
   button: {
     borderRadius: 0
   },
   codeEditor: {
-    display: 'flex'
+    display: 'flex',
+    //width: `calc(100% - 241px)`,
+    height: `calc(100vh - ${(theme.spacing.unit * 28) + 4}px )`,
+    margin: `0 -${theme.spacing.unit * 4}px`
   },
   editorField: {
-    flex: '1 1 0'
+    //flex: '1 1 0'
+    overflowX: 'auto',
+    flexBasis: 0,
+    flexGrow: 1
   },
 });
 
@@ -43,41 +59,47 @@ class AddCodeSample extends Component {
   };
 
   render() {
-    const { classes, fetchLanguages: { readLanguages, loading } } = this.props
-    const {LanguageName} = this.state
+    const { classes, fetchLanguages: { readLanguages, loading }, fontSize, client } = this.props
+    const { LanguageName } = this.state
+
+    const data = client.readQuery({
+      query: ALL_API_CATEGORIES_WITH_DATA,
+    });
+
+    console.log('Extract methods from this data', data)
 
     if (loading) {
       return <Loader fontSize={18} size={22} loadingText={'fetching language types'} />
     }
 
-    console.log('Fetched langues data ', readLanguages)
+    // let editorFieldStyle = { 
+    //   fontSize: `${fontSize}px !important`
+    // }
+
+    let editorFieldStyle = {
+      fontSize: `${fontSize}px`
+    }
 
     return (
       <div className={classes.root}>
         <BackButton />
-        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this.addCategory(e)}>
+        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this._createCodeSample(e)}>
           {this.selectLanguage(readLanguages)}
-          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCategory(e)} >Add Code Sample</Button>
+          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCodeSample(e)} >Add Code Sample</Button>
         </form>
         <div className={classes.codeEditor}>
-          <SyntaxHighlighter
-            className={classes.editorField}
-            language={LanguageName.length >=1 ? LanguageName : 'javascript'}
-            //style={this.props.style}
-            style={{...this.props.style,...{fontSize: `${this.props.fontSize}px`}}}
-            showLineNumbers={this.props.showLineNumbers}>
-            {this.state.CodeSample}
-          </SyntaxHighlighter>
-          <TextField
-            id="CodeSample"
-            style={{fontSize: `${this.props.fontSize}px`}}
-            className={classNames(classes.textField, classes.editorField)}
+          <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField} />
+          <Input
             value={this.state.CodeSample}
             onChange={this.handleChange('CodeSample')}
-            label="Code Sample"
             placeholder="Enter your code here"
+            style={editorFieldStyle}
             multiline
             margin="normal"
+            className={`${classes.input} ${classes.editorField}`}
+            inputProps={{
+              'aria-label': 'code-editor',
+            }}
           />
         </div>
       </div>
@@ -112,6 +134,26 @@ class AddCodeSample extends Component {
     });
   };
 
+  handleBackAction = () => {
+    this.props.history.goBack()
+  }
+
+  _createCodeSample = async (e) => {
+    e.preventDefault()
+    const { LanguageName, CodeSample } = this.state;
+    // 1. create new method 
+    await this.props.createCodeSampleMutation({
+      variables: {
+        language: LanguageName,
+        code: CodeSample,
+        methodID: 48
+      },
+    });
+    alert('Make a nicer alert, also f ind what response is sent on success')
+
+    this.handleBackAction()
+  }
+
 }
 
 const reduxWrapper = connect(
@@ -123,20 +165,15 @@ const reduxWrapper = connect(
 );
 
 const CREATE_CODE_SAMPLE_MUTATION = gql`
-mutation CreateLinkMutation($Name: String) {
-  createCategory(Input: {
-    Name: $Name
+mutation CreateCodeSampleMutation($language: String, $code: String, $methodID:ID) {
+  createCode_Example(Input: {
+    LanguageName: $language, 
+    CodeSample: $code, 
+    MethodID: $methodID
   }) {
-    ID,
-    Name,
-    Methods {
-      edges {
-        node {
-          ID
-          Name
-        }
-      }
-    }
+    ID
+    LanguageName
+    CodeSample
   }
 }
 `;

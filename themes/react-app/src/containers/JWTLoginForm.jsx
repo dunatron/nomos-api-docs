@@ -4,7 +4,7 @@ import { graphql, compose } from 'react-apollo';
 import LoginForm from '../components/LoginForm';
 import AlertMessage from '../components/AlertMessage';
 import { setToken, setFirstName, setUserName, logoutUser } from '../actions/tokenActions';
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import Button from 'material-ui/Button';
 import Loader from '../components/Loader';
 
@@ -26,7 +26,7 @@ class JWTLoginForm extends Component {
 
   onSubmit = (Email, Password) => {
     const { mutate } = this.props;
-    this.setState({loading: true})
+    this.setState({ loading: true })
     mutate({
       variables: {
         Email,
@@ -53,21 +53,21 @@ class JWTLoginForm extends Component {
   render() {
     const { inValidCredentials, loading } = this.state
 
-    if(loading) {
+    if (loading) {
       return <Loader size={30} loadingText={"logging In"} fontSize={11} />
     }
 
-    const {token: {firstName, token, userName}} = this.props
+    const { token: { firstName, token, userName, validToken } } = this.props
     return (
       <Fragment>
         {inValidCredentials ? <AlertMessage
           open={true}
           alertText={"Invalid credentials"}
-          dismissAlert={() => this.setState({inValidCredentials: false})}
+          dismissAlert={() => this.setState({ inValidCredentials: false })}
         /> : null}
 
-        {token ? this.logoutBtn(userName ? userName : firstName) : <LoginForm onSubmit={this.onSubmit} />}
-        
+        {validToken ? this.logoutBtn(userName ? userName : firstName) : <LoginForm onSubmit={this.onSubmit} />}
+
       </Fragment>
     )
   }
@@ -80,7 +80,7 @@ class JWTLoginForm extends Component {
 
   validCredentials = (data) => {
     this.setState({
-      inValidCredentials: false, 
+      inValidCredentials: false,
       loggedIn: true
     })
     this.props.setToken(data.Token)
@@ -109,7 +109,7 @@ mutation createToken($Email: String!, $Password: String!) {
 
 const reduxWrapper = connect(
   state => ({
-    token: state.token, 
+    token: state.token,
   }),
   dispatch => ({
     setToken: (token) => dispatch(setToken(token)),
@@ -120,7 +120,7 @@ const reduxWrapper = connect(
     // }
   }));
 
-  export default compose(
-    reduxWrapper,
-    graphql(tokenMutation),
-  )(JWTLoginForm);
+export default compose(
+  reduxWrapper,
+  graphql(tokenMutation),
+)(JWTLoginForm);

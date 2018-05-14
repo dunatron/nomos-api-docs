@@ -1,6 +1,8 @@
 const defaultState = {
   token: localStorage.getItem('jwt'),
   validToken: false,
+  code: null,
+  message: '',
   userName: localStorage.getItem('userName'),
   firstName: localStorage.getItem('firstName')
 };
@@ -10,6 +12,11 @@ export default (state = defaultState, action) => {
       return {
         ...state,
         validToken: true
+      }
+      case 'SET_TOKEN_IS_NOT_VALID': 
+      return {
+        ...state,
+        validToken: false
       }
     case 'SET_TOKEN':
       localStorage.setItem('jwt', action.payload);

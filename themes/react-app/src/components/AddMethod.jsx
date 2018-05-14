@@ -70,7 +70,7 @@ class AddMethod extends Component {
     return (
       <div className={classes.root}>
         <BackButton />
-        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this.addCategory(e)}>
+        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this._createApiMethod(e)}>
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor="category">Category</InputLabel>
             <Select
@@ -121,7 +121,7 @@ class AddMethod extends Component {
           />
           {this.renderCurrentParams()}
           <AddQueryParam addParam={({ paramName, paramDescription }) => this._addParam({ paramName, paramDescription })} />
-          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCategory(e)} >Add Api Method</Button>
+          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createApiMethod(e)} >Add Api Method</Button>
         </form>
       </div>
     )
@@ -131,7 +131,7 @@ class AddMethod extends Component {
     const { classes } = this.props
     return this.state.QueryParameters.map((d, i) => {
       return (
-        <div className={classes.paramRow}>
+        <div className={classes.paramRow} key={i}>
           <span className={classes.paramRowItem}>{d.Parameter}</span>
           <span className={classes.paramRowItem}>{d.Description}</span>
           <IconButton className={classNames(classes.button, classes.paramRowItem)} aria-label="Delete" color="primary" onClick={() =>
@@ -182,7 +182,7 @@ class AddMethod extends Component {
 
 
 
-  _createCategory = async (e) => {
+  _createApiMethod = async (e) => {
     e.preventDefault()
     const { Name, CategoryID, Description, HttpRequest, PermittedCall, QueryParameters } = this.state;
     let newMethodID
@@ -200,11 +200,21 @@ class AddMethod extends Component {
         newMethodID = createMethod.ID
         const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
 
+
+
+        console.log('Check DATA Async?? await? ', JSON.parse(JSON.stringify(data)))
+
+        createMethod['__typename'] = 'SUCKIT'
+
         data.readCategories.edges.map((d, i) => {
           if (d.node.ID === CategoryID) {
-            data.readCategories.edges[i].node.Methods.edges.splice(0, 0, { node: createMethod })
+           // data.readCategories.edges[i].node.Methods.edges.splice(0, 0, { node: createMethod })
+            data.readCategories.edges[i].node.Methods.edges.push({ node: createMethod })
+
           }
         })
+
+        console.log('REDING AFTER: ', data)
 
         store.writeQuery({
           query: ALL_API_CATEGORIES_WITH_DATA,
@@ -213,12 +223,12 @@ class AddMethod extends Component {
         console.groupEnd()
       }
     });
-    // 3. loop over query Params
+    //3. loop over query Params
     QueryParameters.map((d, i) => {
       this._createQueryParameter(d, newMethodID)
     })
 
-    this.handleBackAction()
+   //this.handleBackAction()
   }
 
   // 4. save any QueryParameters against method
@@ -248,7 +258,6 @@ mutation CreateMethodMutation(
   $Description:String,
   $HttpRequest:String, 
   $PermittedCall:String
-  
 ) 
 {
     createMethod(Input: {
@@ -266,7 +275,7 @@ mutation CreateMethodMutation(
     PermittedCall
     CodeExamples {
       ID
-      Title
+      LanguageName
       CodeSample
     }
   }

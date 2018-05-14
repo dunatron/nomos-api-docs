@@ -23,18 +23,20 @@ const styles = theme => ({
 
 class CodeSample extends Component {
   render() {
-    const { classes, CodeSample, fontSize } = this.props;
+    const { classes, CodeSample, fontSize, language, extraClass } = this.props;
 
     let highlighterSettingsStyle = {
       fontSize: `${fontSize}px`,
       lineHeight: `${fontSize}px`,
     }
 
+    console.log("LANGUAGE TYPE ", language)
+
     return (
 
-      <div className={classes.codeBody} style={highlighterSettingsStyle}>
+      <div className={`${classes.codeBody} ${extraClass}`} style={highlighterSettingsStyle}>
         <SyntaxHighlighter
-          // language="javascript"
+          language={language ? language : 'javascript'}
           className={classes.preStyle}
           style={this.props.style}
           showLineNumbers={this.props.showLineNumbers}>
