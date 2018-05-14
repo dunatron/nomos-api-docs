@@ -51,10 +51,6 @@ class ApiMenuItem extends Component {
 
     const { classes, methodList } = this.props;
 
-    console.log('method list has made it ', methodList)
-
-    //const methodList = this.props.categories;
-
     return (
       <List className={classes.list}>
         {methodList.edges.map((d, i) =>
@@ -73,8 +69,6 @@ class ApiMenuItem extends Component {
   }
 
   handleClick = (d, i) => {
-    console.log("i ", i)
-    console.log("d ", d)
     this.fetchApiMethod(d.node.ID)
   }
 
@@ -86,7 +80,6 @@ class ApiMenuItem extends Component {
       }
     })
       .then((res) => {
-        console.log("res ", res)
         const method = res.data.getSingleMethod[0]
         // This is sent to redux and deconstructed as store object there
         // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method

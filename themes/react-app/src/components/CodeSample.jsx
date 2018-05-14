@@ -30,8 +30,6 @@ class CodeSample extends Component {
       lineHeight: `${fontSize}px`,
     }
 
-    console.log("LANGUAGE TYPE ", language)
-
     return (
 
       <div className={`${classes.codeBody} ${extraClass}`} style={highlighterSettingsStyle}>

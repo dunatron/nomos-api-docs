@@ -46,7 +46,6 @@ class ApiCategoriesList extends Component {
   
   render() {
     const { getApiCategoriesWithData: { loading, readCategories }, token, codeExamples, validToken, setTokenIsValid } = this.props;
-    console.log('PROPS ', this.props)
 
     if (loading) {
       return <Loader loadingText={"fetching Nomos API docs"} size={20} fontSize={18} />;
@@ -64,10 +63,7 @@ class ApiCategoriesList extends Component {
       setTokenIsNotValid()
     }
 
-    console.log("Reading Categories for APP DATA ", readCategories)
-
-    //const { edges = [] } = readCategories || {}
-    const edges = []
+    const {edges} = readCategories
 
     return (
       <NavDrawer edges={edges} codeExamples={codeExamples} validToken={validToken} />

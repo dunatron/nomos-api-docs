@@ -31,6 +31,21 @@
   font-size: large;
 }
 
+.Subtle-controls {
+  position: absolute;
+  bottom: 40px;
+  right: 0;
+  max-width: 40px;
+  width: 100%;
+  height: 40px;
+  background-color: rebeccapurple;
+  transition: max-width 1s ease;
+}
+
+.Subtle-controls:hover {
+  max-width: 300px;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }

@@ -35,10 +35,7 @@ const styles = theme => ({
 class CreateDocsContainer extends Component {
 
   render() {
-
     const { classes, match } = this.props
-
-    console.log("MAtch Props ", this.props);
 
     return (
       <Fragment>
@@ -94,10 +91,8 @@ class CreateDocsContainer extends Component {
   }
 
   handlePageChange = (url) => {
-    console.log(url);
-    //this.props.history.push(`/`)
     this.props.history.push(url)
-    this.forceUpdate()
+    //this.forceUpdate()
   };
 
 }

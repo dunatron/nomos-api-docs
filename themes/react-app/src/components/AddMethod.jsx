@@ -16,6 +16,7 @@ import AddQueryParam from './AddQueryParam'
 import IconButton from 'material-ui/IconButton';
 import TrashIcon from 'material-ui-icons/Remove';
 import classNames from 'classnames';
+import Loader from './Loader'
 
 const styles = theme => ({
   root: {
@@ -57,11 +58,14 @@ class AddMethod extends Component {
     Description: "",
     HttpRequest: "",
     PermittedCall: "",
-    QueryParameters: []
+    QueryParameters: [],
+    adding: false,
+    addingText: ''
   };
 
   render() {
     const { classes, match, client } = this.props
+    const {adding, addingText} = this.state
     const data = client.readQuery({
       query: ALL_API_CATEGORIES_WITH_DATA,
     });
@@ -69,60 +73,67 @@ class AddMethod extends Component {
 
     return (
       <div className={classes.root}>
-        <BackButton />
-        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this._createApiMethod(e)}>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor="category">Category</InputLabel>
-            <Select
-              value={this.state.CategoryID}
+        {adding ? <Loader loadingText={addingText}/> :
+          <Fragment>
+            <BackButton/>
+            <form className={classes.formContainer} noValidate autoComplete="off"
+                  onSubmit={(e) => this._createApiMethod(e)}>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor="category">Category</InputLabel>
+                <Select
+                  value={this.state.CategoryID}
 
-              onChange={this.handleChange('CategoryID')}
-              inputProps={{
-                name: 'CategoryID',
-                id: 'CategoryID',
-              }}
-            >
-              {allCategories.map((d, i) => {
-                return <MenuItem value={d.node.ID}>{d.node.Name}</MenuItem>
-              })}
-            </Select>
-          </FormControl>
-          <TextField
-            id="Name"
-            label="Name"
-            className={classes.textField}
-            value={this.state.Name}
-            onChange={this.handleChange('Name')}
-            margin="normal"
-          />
-          <TextField
-            id="Description"
-            label="Description"
-            className={classes.textField}
-            value={this.state.Description}
-            onChange={this.handleChange('Description')}
-            margin="normal"
-          />
-          <TextField
-            id="HttpRequest"
-            label="HttpRequest"
-            className={classes.textField}
-            value={this.state.HttpRequest}
-            onChange={this.handleChange('HttpRequest')}
-            margin="normal"
-          />
-          <TextField
-            id="PermittedCall"
-            label="PermittedCall"
-            className={classes.textField}
-            value={this.state.PermittedCall}
-            onChange={this.handleChange('PermittedCall')}
-            margin="normal"
-          />
-          {this.renderCurrentParams()}
-          <AddQueryParam addParam={({ paramName, paramDescription }) => this._addParam({ paramName, paramDescription })} />
-          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createApiMethod(e)} >Add Api Method</Button>
-        </form>
+                  onChange={this.handleChange('CategoryID')}
+                  inputProps={{
+                    name: 'CategoryID',
+                    id: 'CategoryID',
+                  }}
+                >
+                  {allCategories.map((d, i) => {
+                    return <MenuItem key={i} value={d.node.ID}>{d.node.Name}</MenuItem>
+                  })}
+                </Select>
+              </FormControl>
+              <TextField
+                id="Name"
+                label="Name"
+                className={classes.textField}
+                value={this.state.Name}
+                onChange={this.handleChange('Name')}
+                margin="normal"
+              />
+              <TextField
+                id="Description"
+                label="Description"
+                className={classes.textField}
+                value={this.state.Description}
+                onChange={this.handleChange('Description')}
+                margin="normal"
+              />
+              <TextField
+                id="HttpRequest"
+                label="HttpRequest"
+                className={classes.textField}
+                value={this.state.HttpRequest}
+                onChange={this.handleChange('HttpRequest')}
+                margin="normal"
+              />
+              <TextField
+                id="PermittedCall"
+                label="PermittedCall"
+                className={classes.textField}
+                value={this.state.PermittedCall}
+                onChange={this.handleChange('PermittedCall')}
+                margin="normal"
+              />
+              {this.renderCurrentParams()}
+              <AddQueryParam
+                addParam={({paramName, paramDescription}) => this._addParam({paramName, paramDescription})}/>
+              <Button className={classes.button} variant="raised" color="primary" type="submit"
+                      onClick={(e) => this._createApiMethod(e)}>Add Api Method</Button>
+            </form>
+          </Fragment>
+        }
       </div>
     )
   }
@@ -185,6 +196,10 @@ class AddMethod extends Component {
   _createApiMethod = async (e) => {
     e.preventDefault()
     const { Name, CategoryID, Description, HttpRequest, PermittedCall, QueryParameters } = this.state;
+    this.setState({
+      adding: true,
+      addingText: `Creating "${Name}" Method`
+    })
     let newMethodID
     // 1. create new method 
     await this.props.createMethodMutation({
@@ -199,23 +214,13 @@ class AddMethod extends Component {
       update: (store, { data: { createMethod } }) => {
         newMethodID = createMethod.ID
         const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
-
-
-
-        console.log('Check DATA Async?? await? ', JSON.parse(JSON.stringify(data)))
-
-        createMethod['__typename'] = 'SUCKIT'
-
         data.readCategories.edges.map((d, i) => {
           if (d.node.ID === CategoryID) {
-           // data.readCategories.edges[i].node.Methods.edges.splice(0, 0, { node: createMethod })
-            data.readCategories.edges[i].node.Methods.edges.push({ node: createMethod })
-
+           data.readCategories.edges[i].node.Methods.edges.splice(0, 0, { node: createMethod, __typename: "MethodsEdge" })
+            // RIP OSCAR `${fnab} ${_w} ${T_idio}`
+            //data.readCategories.edges[i].node.Methods.edges.push({ node: createMethod })
           }
         })
-
-        console.log('REDING AFTER: ', data)
-
         store.writeQuery({
           query: ALL_API_CATEGORIES_WITH_DATA,
           data
@@ -228,7 +233,7 @@ class AddMethod extends Component {
       this._createQueryParameter(d, newMethodID)
     })
 
-   //this.handleBackAction()
+   this.handleBackAction()
   }
 
   // 4. save any QueryParameters against method

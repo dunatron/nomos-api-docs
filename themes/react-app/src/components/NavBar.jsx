@@ -47,7 +47,7 @@ class NavBar extends Component {
   };
 
   handlePageChange = (url) => {
-    console.log(url);
+
     this.handleClose();
     //this.props.history.push(`/`)
     this.props.history.push(url)

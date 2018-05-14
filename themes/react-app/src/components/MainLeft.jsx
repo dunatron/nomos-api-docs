@@ -13,6 +13,8 @@ const styles = theme => ({
     minWidth: "50%",
     backgroundColor: theme.palette.background.paper,
     height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
+    padding: theme.spacing.unit * 4,
+    boxSizing: 'border-box',
     // marginTop: theme.spacing.unit * 6,
     // height: '100vh',
     textAlign: 'left'

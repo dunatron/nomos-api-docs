@@ -54,19 +54,35 @@ const styles = theme => ({
 class AddCodeSample extends Component {
 
   state = {
+    MethodID: "",
     LanguageName: "",
-    CodeSample: ""
+    CodeSample: "",
+    adding: false,
+    addingText: ''
   };
 
   render() {
     const { classes, fetchLanguages: { readLanguages, loading }, fontSize, client } = this.props
-    const { LanguageName } = this.state
+    const { LanguageName, adding, addingText } = this.state
 
     const data = client.readQuery({
       query: ALL_API_CATEGORIES_WITH_DATA,
     });
 
     console.log('Extract methods from this data', data)
+
+    const methodsList = [];
+
+    data.readCategories.edges.map((cat, catIdx) => {
+      cat.node.Methods.edges.map((method, methodIdx) => {
+        methodsList.push({
+          name: method.node.Name,
+          id: method.node.ID
+        })
+      })
+    })
+
+    console.log('OUR METHODS LIST ', methodsList)
 
     if (loading) {
       return <Loader fontSize={18} size={22} loadingText={'fetching language types'} />
@@ -82,27 +98,55 @@ class AddCodeSample extends Component {
 
     return (
       <div className={classes.root}>
-        <BackButton />
-        <form className={classes.formContainer} noValidate autoComplete="off" onSubmit={(e) => this._createCodeSample(e)}>
-          {this.selectLanguage(readLanguages)}
-          <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={(e) => this._createCodeSample(e)} >Add Code Sample</Button>
-        </form>
-        <div className={classes.codeEditor}>
-          <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField} />
-          <Input
-            value={this.state.CodeSample}
-            onChange={this.handleChange('CodeSample')}
-            placeholder="Enter your code here"
-            style={editorFieldStyle}
-            multiline
-            margin="normal"
-            className={`${classes.input} ${classes.editorField}`}
-            inputProps={{
-              'aria-label': 'code-editor',
-            }}
-          />
-        </div>
+        {adding ? <Loader loadingText={addingText}/> :
+          <Fragment>
+            <BackButton/>
+            <form className={classes.formContainer} noValidate autoComplete="off"
+                  onSubmit={(e) => this._createCodeSample(e)}>
+              {this.selectApiMethod(methodsList)}
+              {this.selectLanguage(readLanguages)}
+              <Button className={classes.button} variant="raised" color="primary" type="submit"
+                      onClick={(e) => this._createCodeSample(e)}>Add Code Sample</Button>
+            </form>
+            <div className={classes.codeEditor}>
+              <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField}/>
+              <Input
+                value={this.state.CodeSample}
+                onChange={this.handleChange('CodeSample')}
+                placeholder="Enter your code here"
+                style={editorFieldStyle}
+                multiline
+                className={`${classes.input} ${classes.editorField}`}
+                inputProps={{
+                  'aria-label': 'code-editor',
+                }}
+              />
+            </div>
+          </Fragment>
+        }
       </div>
+    )
+  }
+
+  selectApiMethod = (methods) => {
+    const { classes } = this.props
+    return (
+      <FormControl className={classes.formControl}>
+        <InputLabel htmlFor="method">Method</InputLabel>
+        <Select
+          value={this.state.MethodID}
+
+          onChange={this.handleChange('MethodID')}
+          inputProps={{
+            name: 'MethodID',
+            id: 'MethodID',
+          }}
+        >
+          {methods.map((d, i) => {
+            return <MenuItem key={i} value={d.id}>{d.name}</MenuItem>
+          })}
+        </Select>
+      </FormControl>
     )
   }
 
@@ -121,7 +165,7 @@ class AddCodeSample extends Component {
           }}
         >
           {langues.map((d, i) => {
-            return <MenuItem value={d.Name}>{d.Name}</MenuItem>
+            return <MenuItem key={i} value={d.Name}>{d.Name}</MenuItem>
           })}
         </Select>
       </FormControl>
@@ -140,13 +184,17 @@ class AddCodeSample extends Component {
 
   _createCodeSample = async (e) => {
     e.preventDefault()
-    const { LanguageName, CodeSample } = this.state;
+    const { LanguageName, CodeSample, MethodID } = this.state;
+    this.setState({
+      adding: true,
+      addingText: `Creating "${LanguageName}" Sample`
+    })
     // 1. create new method 
     await this.props.createCodeSampleMutation({
       variables: {
         language: LanguageName,
         code: CodeSample,
-        methodID: 48
+        methodID: MethodID
       },
     });
     alert('Make a nicer alert, also f ind what response is sent on success')

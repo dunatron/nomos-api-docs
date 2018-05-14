@@ -14,7 +14,6 @@ class BackButton extends Component {
 
   render() {
     const {classes} = this.props
-
     return <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handleBackButton()} >Back</Button>
   }
 

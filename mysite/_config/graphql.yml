@@ -55,6 +55,15 @@ SilverStripe\GraphQL\Controller:
           operations: 
             read: true
             create: true
+      mutations:
+        updateCodeExample:
+          type: MyOrg\Model\CodeExample
+          args:
+            ID: ID
+            NewMethodID: ID
+            NewLanguageName: String
+            NewCodeSample: String
+          resolver: MyOrg\Model\UpdateCodeExampleResolver
   # Enforce HTTP basic authentication for GraphQL requests
 #  authenticators:
 #    class: SilverStripe\GraphQL\Auth\BasicAuthAuthenticator

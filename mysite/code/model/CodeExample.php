@@ -27,6 +27,12 @@ class CodeExample extends DataObject implements ScaffoldingProvider
         return true;
     }
 
+    public function canEdit($member = null)
+    {
+        return true;
+    }
+
+
     public function canCreate($member = null, $context = array())
     {
 //        $extended = $this->extendedCan(__FUNCTION__, $member, $context);

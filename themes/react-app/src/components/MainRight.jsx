@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {Fragment} from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
 import Tabs, { Tab } from 'material-ui/Tabs';
+import TextField from 'material-ui/TextField';
 import Typography from 'material-ui/Typography';
 import CodeSample from './CodeSample';
+import { gql, compose, graphql } from 'react-apollo';
+import { withApollo } from "react-apollo/index";
+import { withRouter } from 'react-router'
 
 function TabContainer(props) {
   return (
@@ -27,37 +31,85 @@ const styles = theme => ({
     // marginTop: theme.spacing.unit * 6,
     // height: '100vh',
   },
+  subtleControls: {
+    position: 'absolute',
+    bottom: '40px',
+    right: 0,
+    width: '100%',
+    maxWidth: '40px',
+    transition: 'max-width 1s ease',
+    '&:hover': {
+      maxWidth: '200px',
+    }
+  }
 });
 
 class MainRight extends React.Component {
   state = {
-    value: 0,
+    tabValue: 0,
+    editing: false
   };
 
-  handleChange = (event, value) => {
-    this.setState({ value });
+  handleTabChange = (event, value) => {
+    this.setState({ tabValue: value, editing: false });
+  };
+
+  handleEditChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    });
   };
 
   generateTabContainers = (CodeExamples) => {
+    const {tabValue, editing} = this.state
+    const {classes} = this.props
     return CodeExamples.map((data, index) => {
-      if (this.state.value === index) {
-        return <TabContainer><CodeSample CodeSample={data.CodeSample} /></TabContainer>
+      if (tabValue === index) {
+        return <TabContainer>
+          {editing
+            ?
+            <Fragment>
+              'Edit Mode || Probs render entire new View WIth Cancel etc'
+             {/*<div onClick={() => this.setState({editing:false})}>Save BUTTON </div>*/}
+            </Fragment>
+            :
+            <Fragment>
+              <CodeSample CodeSample={data.CodeSample} />
+              {/*<div className={'Subtle-controls'}>*/}
+              {/*<div className={classes.subtleControls}>*/}
+                {/*<div onClick={() => this.setState({editing:true, editingText: data.CodeSample})}>EDIT BUTTON </div>*/}
+              {/*</div>*/}
+            </Fragment>
+          }
+          <div className={classes.subtleControls}>
+            <div onClick={() => this.editCodeSample(data.ID)}>
+              Edit
+            </div>
+            <div onClick={() => alert('Implement Delete action')}>
+              Delete
+            </div>
+          </div>
+        </TabContainer>
       } else {
         return null
       }
     })
   }
 
+  editCodeSample = (id) => {
+    this.props.history.push(`/edit-snippet/${id}`)
+  }
+
   render() {
     const { classes, CodeExamples } = this.props;
-    const { value } = this.state;
+    const { tabValue } = this.state;
 
     return (
       <div className={classes.root}>
         <AppBar position="static" color="default">
           <Tabs
-            value={value}
-            onChange={this.handleChange}
+            value={tabValue}
+            onChange={this.handleTabChange}
             indicatorColor="primary"
             textColor="primary"
             scrollable
@@ -97,4 +149,10 @@ MainRight.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles)(MainRight);
+// export default withStyles(styles)(MainRight);
+
+export default compose(
+  withRouter,
+  withStyles(styles)
+  // graphql(CategoriesQuery)
+)(MainRight);

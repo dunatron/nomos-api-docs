@@ -10,6 +10,7 @@ import CategoryItem from './CategoryItem';
 import NomosLogo from '../img/nomos-logo.png';
 import MainContainer from '../containers/MainContainer';
 import CreateDocsContainer from '../containers/CreateDocsContainer';
+import EditSnippetContainer from '../containers/EditSnippetContainer';
 import LoginContainer from '../containers/JWTLoginForm'
 import SettingsList from './SettingsList';
 import NavBar from './NavBar';
@@ -76,7 +77,6 @@ class NavDrawer extends React.Component {
      */
     const { classes, edges, codeExamples, validToken } = this.props;
     const { anchor, value } = this.state;
-    console.log("Code examples in Nav DRAWER ", codeExamples)
     const drawer = (
       <Drawer
         variant="permanent"
@@ -120,6 +120,7 @@ class NavDrawer extends React.Component {
             <Switch>
               <Route exact path='/' component={MainContainer} />
               <Route path='/create' component={CreateDocsContainer} />
+              <Route path='/edit-snippet/:id' component={EditSnippetContainer} />
             </Switch>
             {/* <MainContainer /> */}
           </main>
@@ -130,7 +131,6 @@ class NavDrawer extends React.Component {
   }
 
   handlePageChange = (url) => {
-    console.log(url);
     //this.props.history.push(`/`)
     this.props.history.push(url)
     this.forceUpdate()
