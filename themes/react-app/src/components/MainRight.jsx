@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import AppBar from 'material-ui/AppBar';
@@ -9,6 +9,11 @@ import CodeSample from './CodeSample';
 import { gql, compose, graphql } from 'react-apollo';
 import { withApollo } from "react-apollo/index";
 import { withRouter } from 'react-router'
+// Icons
+import IconButton from 'material-ui/IconButton';
+import DeleteForeverIcon from 'material-ui-icons/DeleteForever';
+import EditIcon from 'material-ui-icons/Edit';
+import LeftArrow from 'material-ui-icons/KeyboardArrowLeft'
 
 function TabContainer(props) {
   return (
@@ -35,6 +40,11 @@ const styles = theme => ({
     position: 'absolute',
     bottom: '40px',
     right: 0,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    border: '1px solid red',
+    height: '60px',
     width: '100%',
     maxWidth: '40px',
     transition: 'max-width 1s ease',
@@ -61,8 +71,8 @@ class MainRight extends React.Component {
   };
 
   generateTabContainers = (CodeExamples) => {
-    const {tabValue, editing} = this.state
-    const {classes} = this.props
+    const { tabValue, editing } = this.state
+    const { classes } = this.props
     return CodeExamples.map((data, index) => {
       if (tabValue === index) {
         return <TabContainer>
@@ -77,17 +87,24 @@ class MainRight extends React.Component {
               <CodeSample CodeSample={data.CodeSample} />
               {/*<div className={'Subtle-controls'}>*/}
               {/*<div className={classes.subtleControls}>*/}
-                {/*<div onClick={() => this.setState({editing:true, editingText: data.CodeSample})}>EDIT BUTTON </div>*/}
+              {/*<div onClick={() => this.setState({editing:true, editingText: data.CodeSample})}>EDIT BUTTON </div>*/}
               {/*</div>*/}
             </Fragment>
           }
           <div className={classes.subtleControls}>
-            <div onClick={() => this.editCodeSample(data.ID)}>
-              Edit
-            </div>
-            <div onClick={() => alert('Implement Delete action')}>
-              Delete
-            </div>
+            <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+              <LeftArrow />
+            </IconButton>
+            <IconButton
+              onClick={() => this.editCodeSample(data.ID)}
+              className={classes.menuButton} color="inherit" aria-label="Menu">
+              <EditIcon />
+            </IconButton>
+            <IconButton
+              onClick={() => alert('Implement Delete action')}
+              className={classes.menuButton} color="inherit" aria-label="Menu">
+              <DeleteForeverIcon />
+            </IconButton>
           </div>
         </TabContainer>
       } else {
