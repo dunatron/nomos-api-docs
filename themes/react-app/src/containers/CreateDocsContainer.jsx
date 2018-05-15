@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { withRouter } from 'react-router'
 import AddCategory from '../components/AddCategory';
 import AddMethod from '../components/AddMethod';
+import AddLanguage from '../components/AddLanguage';
 import AddCodeSample from '../components/AddCodeSample';
 //Icons
 import CodeIcon from 'material-ui-icons/Code';
@@ -58,6 +59,12 @@ class CreateDocsContainer extends Component {
                   Add API Method
                 </div>
               </Button>
+              <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handlePageChange('/create/language')}>
+                <div className={classes.btnContents}>
+                  <CodeIcon className={classes.iconBig} />
+                  Add Language
+                </div>
+              </Button>
               <Button className={classes.button} variant="raised" color="primary" type="submit" onClick={() => this.handlePageChange('/create/code-sample')}>
                 <div className={classes.btnContents}>
                   <CodeIcon className={classes.iconBig} />
@@ -77,6 +84,10 @@ class CreateDocsContainer extends Component {
         <Route
           path={match.url + '/method'}
           component={AddMethod}
+        />
+         <Route
+          path={match.url + '/language'}
+          component={AddLanguage}
         />
         <Route
           path={match.url + '/code-sample'}

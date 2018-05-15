@@ -4,7 +4,7 @@ import List, { ListItem, ListItemText } from 'material-ui/List';
 import { gql, compose, graphql, withApollo } from "react-apollo/index";
 import { connect } from "react-redux";
 import { setCurrentMethod } from '../actions/codeExamplesActions';
-import {withRouter} from 'react-router'
+import { withRouter } from 'react-router'
 
 
 
@@ -75,6 +75,9 @@ class ApiMenuItem extends Component {
   fetchApiMethod = async (ID) => {
     await this.props.client.query({
       query: GET_SINGLE_API_METHOD,
+      options: {
+        fetchPolicy: 'network-only'
+      },
       variables: {
         ID: ID,
       }

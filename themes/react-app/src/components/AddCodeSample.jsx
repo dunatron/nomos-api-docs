@@ -16,12 +16,13 @@ import Loader from './Loader';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import classNames from 'classnames';
 import CodeSample from './CodeSample'
+import { GET_SINGLE_API_METHOD } from './ApiMenuItem';
 
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 4,
     textAlign: 'left',
-    width: '100%', 
+    width: '100%',
     boxSizing: 'border-box'
   },
   formContainer: {
@@ -98,18 +99,18 @@ class AddCodeSample extends Component {
 
     return (
       <div className={classes.root}>
-        {adding ? <Loader loadingText={addingText}/> :
+        {adding ? <Loader loadingText={addingText} /> :
           <Fragment>
-            <BackButton/>
+            <BackButton />
             <form className={classes.formContainer} noValidate autoComplete="off"
-                  onSubmit={(e) => this._createCodeSample(e)}>
+              onSubmit={(e) => this._createCodeSample(e)}>
               {this.selectApiMethod(methodsList)}
               {this.selectLanguage(readLanguages)}
               <Button className={classes.button} variant="raised" color="primary" type="submit"
-                      onClick={(e) => this._createCodeSample(e)}>Add Code Sample</Button>
+                onClick={(e) => this._createCodeSample(e)}>Add Code Sample</Button>
             </form>
             <div className={classes.codeEditor}>
-              <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField}/>
+              <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField} />
               <Input
                 value={this.state.CodeSample}
                 onChange={this.handleChange('CodeSample')}
@@ -185,19 +186,80 @@ class AddCodeSample extends Component {
   _createCodeSample = async (e) => {
     e.preventDefault()
     const { LanguageName, CodeSample, MethodID } = this.state;
+    const { client } = this.props
     this.setState({
       adding: true,
       addingText: `Creating "${LanguageName}" Sample`
     })
     // 1. create new method 
+    // await this.props.createCodeSampleMutation({
+    //   options: {
+    //     refetchQueries: [
+    //       {query: GET_SINGLE_API_METHOD}
+    //     ]
+    //   },
+    //   variables: {
+    //     language: LanguageName,
+    //     code: CodeSample,
+    //     methodID: MethodID
+    //   },
+    // }).then(res => {
+    //   console.log('Refetch res ', res)
+    // })
+
+
+    // await this.props.createCodeSampleMutation({
+    //   options: (props) => ({
+    //     refetchQueries: [
+    //       {query: GET_SINGLE_API_METHOD}
+    //     ]
+    //   }).then(res => {
+    //     console.log('UMM LOL ', res)
+    //   }),
+    //   variables: {
+    //     language: LanguageName,
+    //     code: CodeSample,
+    //     methodID: MethodID
+    //   },
+    // }).then(res => {
+    //   console.log('Refetch res ', res)
+    // })
+
     await this.props.createCodeSampleMutation({
       variables: {
         language: LanguageName,
         code: CodeSample,
         methodID: MethodID
       },
+      refetchQueries: [
+        {
+          query: GET_SINGLE_API_METHOD, 
+          variables: {
+            ID: MethodID
+          }
+        }
+      ], 
     });
-    alert('Make a nicer alert, also f ind what response is sent on success')
+
+
+    //alert('Make a nicer alert, also f ind what response is sent on success')
+
+    // Clear the Cache for this type of query below
+    //
+
+    // await this.props.client.query({
+    //   query: GET_SINGLE_API_METHOD,
+    //   options: {
+    //     fetchPolicy: 'cache-and-network',
+    //     refetchQueries
+    //   },
+    //   variables: {
+    //     ID: this.state.MethodID,
+    //   }
+    // })
+    //   .then((res) => {
+    //     console.log("REFETCH ", res)
+    //   })
 
     this.handleBackAction()
   }
