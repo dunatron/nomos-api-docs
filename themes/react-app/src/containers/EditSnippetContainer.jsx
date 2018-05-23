@@ -21,6 +21,9 @@ import SelectCodeLanguage from "../components/SelectCodeLanguage"
 // queries
 import { FETCH_LANGUAGES } from "../queries/fetchLanguages"
 
+// actions
+import { setCurrentMethod } from "../actions/codeExamplesActions"
+
 const styles = theme => ({
   root: {
     padding: theme.spacing.unit * 4,
@@ -63,13 +66,27 @@ class EditSnippetContainer extends Component {
     CodeSample: "",
     updating: false,
     updatingText: "",
+    updated: false,
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.MethodID !== this.state.MethodID) {
+      return true
+    }
+    if (nextState.LanguageName !== this.state.LanguageName) {
+      return true
+    }
+    if (nextState.CodeSample !== this.state.CodeSample) {
+      return true
+    }
+    return false
   }
 
   render() {
-    console.group('EditSnippetContainer')
+    console.group("EditSnippetContainer")
     console.log("Spinnept Container Props ", this.props)
-    console.log('code Sample Props ', this.props.codeSample)
-    console.log('original Language ', this.props.codeSample.LanguageName)
+    console.log("code Sample Props ", this.props.codeSample)
+    console.log("original Language ", this.props.codeSample.LanguageName)
     console.groupEnd()
 
     const { updating, updatingText } = this.state
@@ -121,8 +138,8 @@ class EditSnippetContainer extends Component {
                 variant="raised"
                 color="primary"
                 type="submit"
-                onClick={e => this._createCodeSample(e)}>
-                Add Code Sample
+                onClick={e => this._updateCodeSample(e)}>
+                Update Code Sample
               </Button>
             </form>
             {/* <div className={classes.codeEditor}>
@@ -157,8 +174,10 @@ class EditSnippetContainer extends Component {
     })
   }
 
-  _updateCodeSample = async () => {
+  _updateCodeSample = async e => {
+    e.preventDefault()
     const { mutate } = this.props
+    const { MethodID } = this.state
     const {
       codeSample: {
         0: { CodeSample, ID, LanguageName },
@@ -166,18 +185,94 @@ class EditSnippetContainer extends Component {
     } = this.props
     console.log("Update Code Samples Props ", this.props)
     console.log("AHHH ", mutate)
-    await this.props
-      .updateCodeSnippet({
+    const response = await this.props.updateCodeSnippet({
+      variables: {
+        ID: ID,
+        NewMethodID: MethodID,
+        NewLanguageName: LanguageName,
+        NewCodeSample: CodeSample,
+      },
+      refetchQueries: [
+        {
+          query: GET_SINGLE_API_METHOD,
+          variables: {
+            ID: MethodID,
+          },
+        },
+        {
+          query: GET_SINGLE_API_METHOD,
+          variables: {
+            ID: this.props.originalMethodID,
+          },
+        },
+      ],
+    })
+    console.log("1")
+    console.log("Update Response try catch", response)
+    //this.props.history.push("/")
+    //this.fetchApiMethod(this.props.originalMethodID)
+    //this.fetchApiMethod(this.props.originalMethodID)
+    // This is only working with the time out
+    // Maybe after update has happened I give them an option
+    // 1st try async await with time out set to nothing
+    setTimeout(async () => {
+      await this.fetchApiMethod(this.props.originalMethodID)
+    }, 2000)
+    // setTimeout(async () => {
+    //   await this.fetchApiMethod(this.props.originalMethodID)
+    // }, 500)
+  }
+
+  // fetchApiMethod = async ID => {
+  //   await this.props.client
+  //     .query({
+  //       query: GET_SINGLE_API_METHOD,
+  //       options: {
+  //         fetchPolicy: "network-only",
+  //       },
+  //       variables: {
+  //         ID: ID,
+  //       },
+  //     })
+  //     .then(res => {
+  //       console.log("THis SHould have updated data ", res)
+  //       const method = res.data.getSingleMethod[0]
+  //       // This is sent to redux and deconstructed as store object there
+  //       // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method
+  //       this.props.setCurrentMethod(method)
+  //     })
+  //     .then(() => {
+  //       this.routeToHome()
+  //     })
+  // }
+
+  fetchApiMethod = async ID => {
+    try {
+      const res = await this.props.client.query({
+        query: GET_SINGLE_API_METHOD,
+        options: {
+          fetchPolicy: "network-only",
+        },
         variables: {
+          // ID: this.props.originalMethodID,
           ID: ID,
-          NewMethodID: 2,
-          NewLanguageName: "Test Search",
-          NewCodeSample: CodeSample,
         },
       })
-      .then(response => {
-        console.log("Update Response try catch", response)
-      })
+      console.log("2")
+      console.log("Fetch after method after edit ", res)
+      const method = res.data.getSingleMethod[0]
+      // This is sent to redux and deconstructed as store object there
+      // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method
+      await this.props.setCurrentMethod(method)
+      this.routeToHome()
+    } catch (e) {
+      alert("Error: ", e)
+    }
+    this.routeToHome()
+  }
+
+  routeToHome = () => {
+    this.props.history.push("/")
   }
 }
 
@@ -214,7 +309,9 @@ const reduxWrapper = connect(
     validToken: state.token.validToken,
     originalMethodID: state.codeExamples.ID,
   }),
-  dispatch => ({})
+  dispatch => ({
+    setCurrentMethod: method => dispatch(setCurrentMethod(method)),
+  })
 )
 
 export default compose(
