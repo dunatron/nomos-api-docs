@@ -59,6 +59,12 @@ const styles = theme => ({
 })
 
 class EditSnippetContainer extends Component {
+  componentDidMount() {
+    // console.log("Component did mount ", this.props.client.store)
+    console.log("Component did mount props ", this.props)
+    console.log("apollo store ", this.props.client.store)
+  }
+
   state = {
     MethodID: this.props.originalMethodID,
     LanguageName: this.props.codeSample[0].LanguageName,
@@ -79,7 +85,34 @@ class EditSnippetContainer extends Component {
     if (nextState.CodeSample !== this.state.CodeSample) {
       return true
     }
+    if (nextState.updating !== this.state.updating) {
+      return true
+    }
     return false
+  }
+
+  renderUpdatedView = () => {
+    const { MethodID } = this.state
+    const { originalMethodID } = this.props
+    return (
+      <Fragment>
+        {MethodID !== originalMethodID ? (
+          <Fragment>
+            <h2>Code snippet has changed methods</h2>
+            <Button onClick={() => this.fetchApiMethod(originalMethodID)}>
+              Original Method
+            </Button>
+            <Button onClick={() => this.fetchApiMethod(MethodID)}>
+              New Method
+            </Button>
+          </Fragment>
+        ) : (
+          <Button onClick={() => this.fetchApiMethod(originalMethodID)}>
+            Back to Method
+          </Button>
+        )}
+      </Fragment>
+    )
   }
 
   render() {
@@ -89,7 +122,7 @@ class EditSnippetContainer extends Component {
     console.log("original Language ", this.props.codeSample.LanguageName)
     console.groupEnd()
 
-    const { updating, updatingText } = this.state
+    const { updating, updated, updatingText } = this.state
 
     const {
       classes,
@@ -101,63 +134,47 @@ class EditSnippetContainer extends Component {
 
     console.log("Fetching original LanguageName ", this.state.LanguageName)
 
-    return (
-      // <Fragment>
-      //   <h1>EDIT SNPIIET CONTAINER</h1>
-      //   <p>{ID}</p>
-      //   <p>{LanguageName}</p>
-      //   <CodeSampleComponent CodeSample={CodeSample}/>
-
-      //   <div onClick={() => this._updateCodeSample()}>UPDATE BUTTON</div>
-      // </Fragment>
-      <div className={classes.root}>
-        {updating ? (
+    if (updating) {
+      return (
+        <div className={classes.root}>
           <Loader loadingText={updatingText} />
-        ) : (
-          <Fragment>
-            <BackButton />
-            <form
-              className={classes.formContainer}
-              noValidate
-              autoComplete="off"
-              onSubmit={e => this._createCodeSample(e)}>
-              <SelectApiMethod
-                value={this.state.MethodID}
-                methodIDChange={methodID => this.updateMethodID(methodID)}
-              />
-              <SelectCodeLanguage
-                value={this.state.LanguageName}
-                languageChange={languageName =>
-                  this.updateLanguageName(languageName)
-                }
-              />
+        </div>
+      )
+    }
 
-              {/* {this.selectLanguage(readLanguages)} */}
-              <Button
-                className={classes.button}
-                variant="raised"
-                color="primary"
-                type="submit"
-                onClick={e => this._updateCodeSample(e)}>
-                Update Code Sample
-              </Button>
-            </form>
-            {/* <div className={classes.codeEditor}>
-              <CodeSample CodeSample={this.state.CodeSample} language={LanguageName} extraClass={classes.editorField} />
-              <Input
-                value={this.state.CodeSample}
-                onChange={this.handleChange('CodeSample')}
-                placeholder="Enter your code here"
-                style={editorFieldStyle}
-                multiline
-                className={`${classes.input} ${classes.editorField}`}
-                inputProps={{
-                  'aria-label': 'code-editor',
-                }}
-              />
-            </div> */}
-          </Fragment>
-        )}
+    if (updated) {
+      return <div className={classes.root}>{this.renderUpdatedView()}</div>
+    }
+
+    return (
+      <div className={classes.root}>
+        <Fragment>
+          <BackButton />
+          <form
+            className={classes.formContainer}
+            noValidate
+            autoComplete="off"
+            onSubmit={e => this._createCodeSample(e)}>
+            <SelectApiMethod
+              value={this.state.MethodID}
+              methodIDChange={methodID => this.updateMethodID(methodID)}
+            />
+            <SelectCodeLanguage
+              value={this.state.LanguageName}
+              languageChange={languageName =>
+                this.updateLanguageName(languageName)
+              }
+            />
+            <Button
+              className={classes.button}
+              variant="raised"
+              color="primary"
+              type="submit"
+              onClick={e => this._updateCodeSample(e)}>
+              Update Code Sample
+            </Button>
+          </form>
+        </Fragment>
       </div>
     )
   }
@@ -176,16 +193,19 @@ class EditSnippetContainer extends Component {
 
   _updateCodeSample = async e => {
     e.preventDefault()
-    const { mutate } = this.props
+    this.setState({
+      updating: true,
+      updatingText: "updating code snippet",
+    })
+    const { mutate, client } = this.props
     const { MethodID } = this.state
     const {
       codeSample: {
         0: { CodeSample, ID, LanguageName },
       },
     } = this.props
-    console.log("Update Code Samples Props ", this.props)
-    console.log("AHHH ", mutate)
-    const response = await this.props.updateCodeSnippet({
+
+    const { data } = await this.props.updateCodeSnippet({
       variables: {
         ID: ID,
         NewMethodID: MethodID,
@@ -207,51 +227,44 @@ class EditSnippetContainer extends Component {
         },
       ],
     })
-    console.log("1")
-    console.log("Update Response try catch", response)
-    //this.props.history.push("/")
-    //this.fetchApiMethod(this.props.originalMethodID)
+
+    console.log("data after update: ", data)
+
+    // const { getSingleMethod } = await client.readQuery({
+    //   query: GET_SINGLE_API_METHOD,
+    //   variables: {
+    //     ID: this.props.originalMethodID,
+    //   },
+    // })
+
+    // const extractedMethod = getSingleMethod[0]
+    // await this.props.setCurrentMethod(extractedMethod)
+
+    this.setState({
+      updating: false,
+      updated: true,
+      updatingText: "",
+    })
+    // this.props.history.push("/")
+    this.fetchApiMethod(this.props.originalMethodID)
     //this.fetchApiMethod(this.props.originalMethodID)
     // This is only working with the time out
     // Maybe after update has happened I give them an option
     // 1st try async await with time out set to nothing
-    setTimeout(async () => {
-      await this.fetchApiMethod(this.props.originalMethodID)
-    }, 2000)
+    // setTimeout(async () => {
+    //   await this.fetchApiMethod(this.props.originalMethodID)
+    // }, 2000)
     // setTimeout(async () => {
     //   await this.fetchApiMethod(this.props.originalMethodID)
     // }, 500)
   }
-
-  // fetchApiMethod = async ID => {
-  //   await this.props.client
-  //     .query({
-  //       query: GET_SINGLE_API_METHOD,
-  //       options: {
-  //         fetchPolicy: "network-only",
-  //       },
-  //       variables: {
-  //         ID: ID,
-  //       },
-  //     })
-  //     .then(res => {
-  //       console.log("THis SHould have updated data ", res)
-  //       const method = res.data.getSingleMethod[0]
-  //       // This is sent to redux and deconstructed as store object there
-  //       // const { ID, Name, Description, HttpRequest, PermittedCall, CodeExamples, QueryParams } = method
-  //       this.props.setCurrentMethod(method)
-  //     })
-  //     .then(() => {
-  //       this.routeToHome()
-  //     })
-  // }
 
   fetchApiMethod = async ID => {
     try {
       const res = await this.props.client.query({
         query: GET_SINGLE_API_METHOD,
         options: {
-          fetchPolicy: "network-only",
+          fetchPolicy: "cache-and-network",
         },
         variables: {
           // ID: this.props.originalMethodID,
@@ -296,16 +309,29 @@ const UPDATE_CODE_SAMPLE = gql`
     }
   }
 `
+/**
+ * ToDo: parse in codeSample in as props instead of linking to store
+ */
+
+const defaultCodeSnippet = [
+  {
+    CodeSample: "",
+    ID: 0,
+    LanguageName: "",
+  },
+]
 
 const reduxWrapper = connect(
   (state, ownProps) => ({
     codeExamples: state.codeExamples.CodeExamples,
-    codeSample: state.codeExamples.CodeExamples.filter(snippet => {
-      // if(snipet.ID == ownProps.match.params.id){
-      //   return snipet
-      // }
-      return snippet.ID === ownProps.match.params.id
-    }),
+    // codeSample: state.codeExamples.CodeExamples.filter(snippet => {
+    //   return snippet.ID === ownProps.match.params.id
+    // }),
+    codeSample: state.codeExamples.CodeExamples
+      ? state.codeExamples.CodeExamples.filter(snippet => {
+          return snippet.ID === ownProps.match.params.id
+        })
+      : defaultCodeSnippet,
     validToken: state.token.validToken,
     originalMethodID: state.codeExamples.ID,
   }),

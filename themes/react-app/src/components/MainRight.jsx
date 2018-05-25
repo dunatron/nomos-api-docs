@@ -174,7 +174,9 @@ class MainRight extends React.Component {
           </Tabs>
         </AppBar>
 
-        {this.generateTabContainers(CodeExamples)}
+        {CodeExamples && this.generateTabContainers(CodeExamples)}
+
+        {/* {this.generateTabContainers(CodeExamples)} */}
 
         {/* {value === 0 && <TabContainer>Item One</TabContainer>}
         {value === 1 && <TabContainer>Item Two</TabContainer>}
