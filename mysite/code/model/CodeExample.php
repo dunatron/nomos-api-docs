@@ -60,6 +60,26 @@ class CodeExample extends DataObject implements ScaffoldingProvider
                 return $codeExamples;
             })
             ->setUsePagination(false)
+            ->end()
+            ->mutation('updateCodeExample', __CLASS__)
+            ->addArgs([
+                'ID' => 'ID!',
+                'NewMethodID' => 'ID!',
+                'NewLanguageName' => 'String!', 
+                'NewCodeSample' => 'String'
+            ])
+            ->setResolver(function ($obj, $args) {
+                $codeExample = CodeExample::get()->byID($args['ID']);
+
+        if ($codeExample->canEdit()) {
+            $codeExample->MethodID = $args['NewMethodID'];
+            $codeExample->LanguageName = $args['NewLanguageName'];
+            $codeExample->CodeSample = $args['NewCodeSample'];
+            $codeExample->write();
+        }
+
+                return $post;
+            })
             ->end();
 
         return $scaffolder;
