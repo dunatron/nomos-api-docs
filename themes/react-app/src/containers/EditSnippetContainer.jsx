@@ -8,7 +8,6 @@ import BackButton from "../components/BackButton"
 import TextField from "material-ui/TextField"
 import Input, { InputLabel } from "material-ui/Input"
 import classNames from "classnames"
-import CodeSample from "../components/CodeSample"
 import { GET_SINGLE_API_METHOD } from "../components/ApiMenuItem"
 
 // components
@@ -69,7 +68,8 @@ class EditSnippetContainer extends Component {
     MethodID: this.props.originalMethodID,
     LanguageName: this.props.codeSample[0].LanguageName,
     //LanguageName: "Fraps",
-    CodeSample: "",
+    CodeSample: this.props.codeSample[0].CodeSample,
+    // CodeSample: "",
     updating: false,
     updatingText: "",
     updated: false,
@@ -126,11 +126,15 @@ class EditSnippetContainer extends Component {
 
     const {
       classes,
+      fontSize,
       codeSample: {
         0: { CodeSample, ID, LanguageName },
       },
       fetchLanguages: { readLanguages, loading },
     } = this.props
+    let editorFieldStyle = {
+      fontSize: `${fontSize}px`,
+    }
 
     console.log("Fetching original LanguageName ", this.state.LanguageName)
 
@@ -165,6 +169,25 @@ class EditSnippetContainer extends Component {
                 this.updateLanguageName(languageName)
               }
             />
+            <div>{this.state.CodeSample}</div>
+            <div className={classes.codeEditor}>
+              <CodeSampleComponent
+                CodeSample={this.state.CodeSample}
+                language={LanguageName}
+                extraClass={classes.editorField}
+              />
+              <Input
+                value={this.state.CodeSample}
+                onChange={this.handleChange("CodeSample")}
+                placeholder="Enter your code here"
+                style={editorFieldStyle}
+                multiline
+                className={`${classes.input} ${classes.editorField}`}
+                inputProps={{
+                  "aria-label": "code-editor",
+                }}
+              />
+            </div>
             <Button
               className={classes.button}
               variant="raised"
@@ -177,6 +200,12 @@ class EditSnippetContainer extends Component {
         </Fragment>
       </div>
     )
+  }
+
+  handleChange = name => event => {
+    this.setState({
+      [name]: event.target.value,
+    })
   }
 
   updateMethodID = id => {
@@ -197,11 +226,11 @@ class EditSnippetContainer extends Component {
       updating: true,
       updatingText: "updating code snippet",
     })
-    const { mutate, client } = this.props
-    const { MethodID } = this.state
+    const { mutate, client, fontSize } = this.props
+    const { MethodID, CodeSample } = this.state
     const {
       codeSample: {
-        0: { CodeSample, ID, LanguageName },
+        0: { ID, LanguageName },
       },
     } = this.props
 
@@ -291,10 +320,10 @@ class EditSnippetContainer extends Component {
 
 const UPDATE_CODE_SAMPLE = gql`
   mutation UpdateCodeSample(
-    $ID: ID
-    $NewMethodID: ID
-    $NewLanguageName: String
-    $NewCodeSample: String
+    $ID: ID!
+    $NewMethodID: ID!
+    $NewLanguageName: String!
+    $NewCodeSample: String!
   ) {
     updateCodeExample(
       ID: $ID
@@ -323,6 +352,7 @@ const defaultCodeSnippet = [
 
 const reduxWrapper = connect(
   (state, ownProps) => ({
+    fontSize: state.higlightStyle.fontSize,
     codeExamples: state.codeExamples.CodeExamples,
     // codeSample: state.codeExamples.CodeExamples.filter(snippet => {
     //   return snippet.ID === ownProps.match.params.id
