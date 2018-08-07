@@ -1,26 +1,28 @@
 import React, { Component } from "react"
-import { withStyles } from "material-ui/styles"
-
-const styles = {
-  cardHolder: {
-    display: "flex",
-    "align-items": "center",
-    overflow: "auto",
-    "box-sizing": "border-box",
-    width: "100%",
-    "justify-content": "center",
-    "flex-direction": "row",
-    "flex-wrap": "wrap",
-    "flex-flow": "row wrap",
-    "align-content": "flex-end",
-  },
-}
+// page layout
+import DoublePanelLayout from "../layouts/DoublePanel"
+// page containers
+import MainContainer from "../containers/MainContainer"
+import CodeExamples from "../containers/CodeExamples"
 
 class HomePage extends Component {
   render() {
-    const { classes } = this.props
-
-    return <div>Home Page</div>
+    return (
+      <DoublePanelLayout
+        leftSection={[
+          <MainContainer />,
+          <div>left component 1</div>,
+          <div>left component 2</div>,
+          <div>left component 3</div>,
+          <div>left component 4</div>,
+        ]}
+        rightSection={[
+          <CodeExamples />,
+          <div>right component 1</div>,
+          <div>right component 2</div>,
+        ]}
+      />
+    )
   }
 }
 

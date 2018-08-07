@@ -73,7 +73,7 @@ class AppDrawer extends React.Component {
     /**
      * ToDo: setup drawer and Tabs to be better. Causing infinite updates etc
      */
-    const { classes, edges, codeExamples, validToken } = this.props
+    const { classes, edges, codeExamples, validToken, children } = this.props
     const { anchor, value } = this.state
     return (
       <Drawer
@@ -94,7 +94,13 @@ class AppDrawer extends React.Component {
           {/* <CodeHighlighterSettings /> */}
         </List>
         <Divider />
-        {edges && edges.map((d, i) => <CategoryItem listValue={d} key={i} />)}
+        {/* {edges && edges.map((d, i) => <CategoryItem listValue={d} key={i} />)} */}
+
+        {children &&
+          children.map(component => {
+            return component
+          })}
+
         <Divider />
       </Drawer>
     )
