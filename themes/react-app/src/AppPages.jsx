@@ -32,16 +32,14 @@ class AppPages extends Component {
   render() {
     const { classes } = this.props
     return (
-      <Fragment>
-        <main className={classes.content}>
-          <Switch>
-            {/* <Route exact path="/" component={MainContainer} /> */}
-            <Route exact path="/" component={HomePage} />
-            <Route path="/create" component={CreateDocsContainer} />
-            <Route path="/edit-snippet/:id" component={EditSnippetContainer} />
-          </Switch>
-        </main>
-      </Fragment>
+      <main className={classes.content}>
+        <Switch>
+          {/* <Route exact path="/" component={MainContainer} /> */}
+          <Route exact path="/" component={HomePage} />
+          <Route path="/create" component={CreateDocsContainer} />
+          <Route path="/edit-snippet/:id" component={EditSnippetContainer} />
+        </Switch>
+      </main>
     )
   }
 }

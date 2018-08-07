@@ -75,7 +75,7 @@ class AppDrawer extends React.Component {
      */
     const { classes, edges, codeExamples, validToken } = this.props
     const { anchor, value } = this.state
-    const drawer = (
+    return (
       <Drawer
         variant="permanent"
         classes={{
@@ -98,8 +98,6 @@ class AppDrawer extends React.Component {
         <Divider />
       </Drawer>
     )
-
-    return <Fragment>{drawer}</Fragment>
   }
 
   handlePageChange = url => {
