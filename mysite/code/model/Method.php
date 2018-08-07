@@ -41,7 +41,8 @@ class Method extends DataObject implements ScaffoldingProvider
 
     private static $has_many =[
         'CodeExamples' => CodeExample::class,
-        'QueryParams' => QueryParam::class
+        'QueryParams' => QueryParam::class,
+        'MethodNotes' => MethodNote::class
     ];
 
     private static $default_sort = 'Created DESC';

@@ -39,6 +39,13 @@ SilverStripe\GraphQL\Controller:
               paginate: false
             QueryParams:
               paginate: false
+            MethodNotes: 
+              paginate: false
+        MyOrg\Model\MethodNote:
+          fields: [ID, Name, Description]
+          operations:
+            read: true
+            create: true
         MyOrg\Model\CodeExample:
           fields: [ID, LanguageName, CodeSample, MethodID]
           operations:

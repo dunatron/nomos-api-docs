@@ -1,9 +1,15 @@
-import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
-import { withStyles } from 'material-ui/styles';
-import Table, { TableBody, TableCell, TableHead, TableRow } from 'material-ui/Table';
-import Typography from 'material-ui/Typography';
-import Paper from 'material-ui/Paper';
+import React, { Fragment } from "react"
+import PropTypes from "prop-types"
+import { withStyles } from "material-ui/styles"
+import Table, {
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+} from "material-ui/Table"
+import Typography from "material-ui/Typography"
+import Paper from "material-ui/Paper"
+import AddMethodNote from "./AddMethodNote"
 
 const styles = theme => ({
   root: {
@@ -14,18 +20,25 @@ const styles = theme => ({
     backgroundColor: theme.palette.background.paper,
     height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
     padding: theme.spacing.unit * 4,
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
     // marginTop: theme.spacing.unit * 6,
     // height: '100vh',
-    textAlign: 'left'
+    textAlign: "left",
   },
-});
+})
 
 class MainLeft extends React.Component {
-  state = {};
+  state = {}
 
   render() {
-    const { classes, Name, Description, HttpRequest, PermittedCall, QueryParams } = this.props;
+    const {
+      classes,
+      Name,
+      Description,
+      HttpRequest,
+      PermittedCall,
+      QueryParams,
+    } = this.props
 
     return (
       <Paper className={classes.root}>
@@ -56,36 +69,37 @@ class MainLeft extends React.Component {
           Query Parameters
         </Typography>
         {QueryParams && this.generateQueryParamsList(QueryParams)}
+        <AddMethodNote />
       </Paper>
-    );
+    )
   }
 
-  generateQueryParamsList = (params) => {
-    const { classes } = this.props;
+  generateQueryParamsList = params => {
+    const { classes } = this.props
     const ParamsList = params.map((d, i) => {
       return (
         <TableRow key={i}>
           <TableCell>{d.Parameter}</TableCell>
           <TableCell>{d.Description}</TableCell>
         </TableRow>
-      );
+      )
     })
-    return <Table className={classes.table}>
-      <TableHead>
-        <TableRow>
-          <TableCell>Parameter</TableCell>
-          <TableCell>Description</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {ParamsList}
-      </TableBody>
-    </Table>
+    return (
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Parameter</TableCell>
+            <TableCell>Description</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>{ParamsList}</TableBody>
+      </Table>
+    )
   }
 }
 
 MainLeft.propTypes = {
   classes: PropTypes.object.isRequired,
-};
+}
 
-export default withStyles(styles)(MainLeft);
+export default withStyles(styles)(MainLeft)
