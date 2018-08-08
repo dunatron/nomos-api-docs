@@ -96,6 +96,9 @@ class NavBar extends Component {
           <MenuItem onClick={() => this.handlePageChange("/")}>
             Main Docs
           </MenuItem>
+          <MenuItem onClick={() => this.handlePageChange("/about")}>
+            About Page
+          </MenuItem>
           <MenuItem onClick={() => this.handlePageChange("/create")}>
             Create Docs
           </MenuItem>

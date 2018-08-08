@@ -12,6 +12,7 @@ import { withRouter } from "react-router"
 
 // Pages
 import HomePage from "./pages/HomePage"
+import AboutPage from "./pages/AboutPage"
 
 const drawerWidth = 240
 
@@ -61,6 +62,7 @@ class AppPages extends Component {
         <Switch>
           {/* <Route exact path="/" component={MainContainer} /> */}
           <Route exact path="/" component={HomePage} />
+          <Route exact path="/about" component={AboutPage} />
           <Route path="/create" component={CreateDocsContainer} />
           <Route path="/edit-snippet/:id" component={EditSnippetContainer} />
         </Switch>
