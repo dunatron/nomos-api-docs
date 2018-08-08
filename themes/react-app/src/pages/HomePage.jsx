@@ -3,8 +3,10 @@ import React, { Component } from "react"
 import DoublePanelLayout from "../layouts/DoublePanel"
 // page containers
 // import MainContainer from "../containers/MainContainer"
-import CurrentMethodContainer from "../containers/CurrentMethod"
+import CurrentMethodContainer from "../containers/CurrentMethodContainer"
 import CodeExamples from "../containers/CodeExamples"
+import NotesTable from "../components/NotesTable"
+import MethodNotesContainer from "../containers/MethodNotesContainer"
 
 class HomePage extends Component {
   render() {
@@ -12,6 +14,7 @@ class HomePage extends Component {
       <DoublePanelLayout
         leftSection={[
           <CurrentMethodContainer />,
+          <NotesTable />,
           <div>left component 1</div>,
           <div>left component 2</div>,
           <div>left component 3</div>,

@@ -9,7 +9,6 @@ import Table, {
 } from "material-ui/Table"
 import Typography from "material-ui/Typography"
 import Paper from "material-ui/Paper"
-import AddMethodNote from "./AddMethodNote"
 
 const styles = theme => ({
   root: {
@@ -18,11 +17,8 @@ const styles = theme => ({
     flexBasis: 0,
     minWidth: "50%",
     backgroundColor: theme.palette.background.paper,
-    height: `calc(100vh - ${theme.spacing.unit * 6}px)`,
     padding: theme.spacing.unit * 4,
     boxSizing: "border-box",
-    // marginTop: theme.spacing.unit * 6,
-    // height: '100vh',
     textAlign: "left",
   },
 })
@@ -69,7 +65,6 @@ class MethodDetails extends React.Component {
           Query Parameters
         </Typography>
         {QueryParams && this.generateQueryParamsList(QueryParams)}
-        <AddMethodNote />
       </Paper>
     )
   }

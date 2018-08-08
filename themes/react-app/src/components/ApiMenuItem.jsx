@@ -85,7 +85,7 @@ class ApiMenuItem extends Component {
         this.props.setCurrentMethod(method)
       })
       .then(() => {
-        this.props.history.push("/")
+        this.props.history.push(`/method/${ID}`)
       })
   }
 }

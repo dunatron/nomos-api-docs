@@ -9,6 +9,7 @@ import { BrowserRouter, Route, Switch, Link } from "react-router-dom"
 import { withRouter } from "react-router"
 import { ALL_API_CATEGORIES_WITH_DATA } from "../containers/ApiCategoriesList"
 import Loader from "./Loader"
+import AlertMessage from "./AlertMessage"
 
 const styles = theme => ({
   root: {
@@ -29,19 +30,30 @@ class AddMethodNote extends Component {
     Name: "",
     adding: false,
     addingText: "",
+    added: false,
   }
 
   render() {
-    const { classes, match } = this.props
-    const { adding, addingText } = this.state
+    const { methodID, classes, match } = this.props
+    const { adding, addingText, added } = this.state
+
+    if (!methodID) {
+      return null
+    }
 
     return (
       <div className={classes.root}>
+        {added && (
+          <AlertMessage
+            open={true}
+            alertText={"Note has been created"}
+            dismissAlert={() => this.setState({ added: false })}
+          />
+        )}
         {adding ? (
           <Loader loadingText={addingText} />
         ) : (
           <Fragment>
-            <BackButton />
             <form
               className={classes.formContainer}
               noValidate
@@ -60,8 +72,8 @@ class AddMethodNote extends Component {
                 variant="raised"
                 color="primary"
                 type="submit"
-                onClick={e => this._createCategory(e)}>
-                Add Category
+                onClick={e => this._createNote(e)}>
+                Add Note
               </Button>
             </form>
           </Fragment>
@@ -76,41 +88,39 @@ class AddMethodNote extends Component {
     })
   }
 
-  handleBackAction = () => {
-    this.props.history.goBack()
-  }
-
-  addCategory = async e => {
-    e.preventDefault()
-    this.handleBackAction()
-  }
-
-  _createCategory = async e => {
+  _createNote = async e => {
     e.preventDefault()
     const { Name } = this.state
+    const { methodID } = this.props
     this.setState({
       adding: true,
-      addingText: `Creating "${Name}" Category`,
+      addingText: `Creating note: "${Name}"`,
     })
 
-    await this.props.createCategoryMutation({
+    const res = await this.props.createMethodNote({
       variables: {
-        Name,
+        methodID: methodID,
+        name: Name,
+        description: "Hello",
       },
-      update: (store, { data: { createCategory } }) => {
-        const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
-        data.readCategories.edges.splice(0, 0, {
-          node: createCategory,
-          __typename: "readCategoriesEdge",
-        })
-        store.writeQuery({
-          query: ALL_API_CATEGORIES_WITH_DATA,
-          data,
-        })
-      },
+      // update: (store, { data: { createCategory } }) => {
+      //   const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })
+      //   data.readCategories.edges.splice(0, 0, {
+      //     node: createCategory,
+      //     __typename: "readCategoriesEdge",
+      //   })
+      //   store.writeQuery({
+      //     query: ALL_API_CATEGORIES_WITH_DATA,
+      //     data,
+      //   })
+      // },
+    })
+    this.setState({
+      adding: false,
+      added: true,
     })
 
-    this.handleBackAction()
+    // this.handleBackAction()
   }
 }
 
