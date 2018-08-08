@@ -318,6 +318,9 @@ class EnhancedTable extends React.Component {
                       <TableCell component="th" scope="row" padding="none">
                         {n.Name}
                       </TableCell>
+                      <TableCell component="th" scope="row" padding="none">
+                        {n.Description}
+                      </TableCell>
                       {/* <TableCell numeric>{n.calories}</TableCell>
                       <TableCell numeric>{n.fat}</TableCell>
                       <TableCell numeric>{n.carbs}</TableCell>

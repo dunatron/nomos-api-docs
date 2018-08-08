@@ -5,7 +5,7 @@ import { gql, compose, graphql, withApollo } from "react-apollo/index"
 import { connect } from "react-redux"
 import { withRouter } from "react-router"
 import Loader from "../components/Loader"
-import EnhancedTable from "../components/EnhancedTable"
+import NotesTable from "../components/NotesTable"
 
 export const GET_METHOD_NOTES = gql`
   query getMethodNotes($ID: ID!) {
@@ -47,29 +47,6 @@ class MethodNotesContainer extends Component {
     console.log("Method ", Method)
     const { ID, Name, Description, MethodNotes } = Method
 
-    const columnData = [
-      {
-        id: "name",
-        numeric: false,
-        disablePadding: true,
-        label: "Note Name",
-      },
-      {
-        id: "calories",
-        numeric: true,
-        disablePadding: false,
-        label: "Note Description",
-      },
-      { id: "fat", numeric: true, disablePadding: false, label: "created" },
-      { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-      {
-        id: "protein",
-        numeric: true,
-        disablePadding: false,
-        label: "Protein (g)",
-      },
-    ]
-
     return (
       <div>
         <h2>Notes For : {Name}</h2>
@@ -88,7 +65,7 @@ class MethodNotesContainer extends Component {
           the other option is to render key value pairs and for a object value
           you could display a json string. Or drill into it{" "}
         </p>
-        <EnhancedTable columnData={columnData} rowData={MethodNotes} />
+        {MethodNotes && <NotesTable notes={MethodNotes} />}
       </div>
     )
   }

@@ -5,7 +5,6 @@ import DoublePanelLayout from "../layouts/DoublePanel"
 // import MainContainer from "../containers/MainContainer"
 import CurrentMethodContainer from "../containers/CurrentMethodContainer"
 import CodeExamples from "../containers/CodeExamples"
-import NotesTable from "../components/NotesTable"
 import MethodNotesContainer from "../containers/MethodNotesContainer"
 
 // class MethodDetailsPage extends Component {
@@ -38,7 +37,6 @@ const MethodDetailsPage = ({ match }) => {
     <DoublePanelLayout
       leftSection={[
         <CurrentMethodContainer />,
-        <NotesTable />,
         <MethodNotesContainer methodID={match.params.id} />,
         <div>left component 1</div>,
         <div>left component 2</div>,
