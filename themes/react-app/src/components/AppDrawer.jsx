@@ -1,32 +1,22 @@
 import React, { Fragment } from "react"
 import PropTypes from "prop-types"
-import classNames from "classnames"
 import { withStyles } from "material-ui/styles"
 import Drawer from "material-ui/Drawer"
-import AppBar from "material-ui/AppBar"
 import List from "material-ui/List"
 import Divider from "material-ui/Divider"
-import CategoryItem from "./CategoryItem"
 import NomosLogo from "../img/nomos-logo.png"
-import MainContainer from "../containers/MainContainer"
-import CreateDocsContainer from "../containers/CreateDocsContainer"
-import EditSnippetContainer from "../containers/EditSnippetContainer"
 import LoginContainer from "../containers/JWTLoginForm"
 import SettingsList from "./SettingsList"
-import NavBar from "./NavBar"
-import CodeHighlighterSettings from "./CodeHighlighterSettings"
-import { BrowserRouter, Route, Switch, Link } from "react-router-dom"
 import { withRouter } from "react-router"
-import { withApollo, compose } from "react-apollo/index"
+import { compose } from "react-apollo/index"
+import Hidden from "material-ui/Hidden"
 
 const drawerWidth = 240
 
 const styles = theme => ({
   root: {
     flexGrow: 1,
-  },
-  appFrame: {
-    height: "100%",
+    height: 430,
     zIndex: 1,
     overflow: "hidden",
     position: "relative",
@@ -34,19 +24,27 @@ const styles = theme => ({
     width: "100%",
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-  },
-  "appBar-left": {
+    position: "absolute",
     marginLeft: drawerWidth,
+    [theme.breakpoints.up("md")]: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
   },
-  "appBar-right": {
-    marginRight: drawerWidth,
+  navIconHide: {
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
   },
+  logoContainer: {
+    minHeight: "220px",
+  },
+  toolbar: theme.mixins.toolbar,
   drawerPaper: {
-    position: "relative",
     width: drawerWidth,
+    [theme.breakpoints.up("md")]: {
+      position: "relative",
+    },
   },
-  toolbar: {},
   content: {
     width: `calc(100% - ${drawerWidth}px)`,
     display: "flex",
@@ -73,16 +71,12 @@ class AppDrawer extends React.Component {
     /**
      * ToDo: setup drawer and Tabs to be better. Causing infinite updates etc
      */
-    const { classes, edges, codeExamples, validToken, children } = this.props
+    const { classes, theme, validToken, mobileIsOpen, children } = this.props
     const { anchor, value } = this.state
-    return (
-      <Drawer
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-        anchor={anchor}>
-        <div className={classes.toolbar}>
+
+    const drawInnards = (
+      <Fragment>
+        <div className={classes.logoContainer}>
           <img src={NomosLogo} className="nomos-logo" alt="nomos logo" />
         </div>
         <Divider />
@@ -91,18 +85,44 @@ class AppDrawer extends React.Component {
         {validToken ? this.renderAdminButtons() : null}
         <List>
           <SettingsList />
-          {/* <CodeHighlighterSettings /> */}
         </List>
         <Divider />
-        {/* {edges && edges.map((d, i) => <CategoryItem listValue={d} key={i} />)} */}
-
         {children &&
           children.map(component => {
             return component
           })}
-
         <Divider />
-      </Drawer>
+      </Fragment>
+    )
+
+    return (
+      <Fragment>
+        <Hidden mdUp>
+          <Drawer
+            variant="temporary"
+            anchor={theme.direction === "rtl" ? "right" : "left"}
+            open={mobileIsOpen}
+            onClose={() => this.props.handleDrawerToggle()}
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}>
+            {drawInnards}
+          </Drawer>
+        </Hidden>
+        <Hidden smDown implementation="css">
+          <Drawer
+            variant="permanent"
+            classes={{
+              paper: classes.drawerPaper,
+            }}
+            anchor={anchor}>
+            {drawInnards}
+          </Drawer>
+        </Hidden>
+      </Fragment>
     )
   }
 
@@ -129,5 +149,5 @@ AppDrawer.propTypes = {
 
 export default compose(
   withRouter,
-  withStyles(styles)
+  withStyles(styles, { withTheme: true })
 )(AppDrawer)

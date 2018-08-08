@@ -22,6 +22,7 @@ import Loader from "./components/Loader"
 
 // store actions
 import { setTokenIsValid, setTokenIsNotValid } from "./actions/tokenActions"
+import { toggleAppDrawer } from "./actions/appSettings"
 
 const drawerWidth = 240
 
@@ -38,7 +39,12 @@ const styles = theme => ({
     width: "100%",
   },
   appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
+    width: "100%",
+  },
+  [theme.breakpoints.up("md")]: {
+    appBar: {
+      width: `calc(100% - ${drawerWidth}px)`,
+    },
   },
   "appBar-left": {
     marginLeft: drawerWidth,
@@ -70,6 +76,7 @@ class App extends Component {
       validateToken: { loading, validateToken },
       token,
       setTokenIsValid,
+      appDrawerIsOpen,
     } = this.props
 
     if (loading) {
@@ -94,9 +101,16 @@ class App extends Component {
               <AppBar
                 position="absolute"
                 className={classNames(classes.appBar, classes[`appBar-left`])}>
-                <NavBar />
+                <NavBar
+                  mobileIsOpen={appDrawerIsOpen}
+                  toggleAppDrawer={() => this.props.toggleAppDrawer()}
+                />
               </AppBar>
-              <AppDrawer children={[<ApiCategoriesList />]} />
+              <AppDrawer
+                mobileIsOpen={appDrawerIsOpen}
+                handleDrawerToggle={() => this.props.toggleAppDrawer()}
+                children={[<ApiCategoriesList />]}
+              />
               <AppPages />
             </div>
           </div>
@@ -110,10 +124,12 @@ const reduxWrapper = connect(
   state => ({
     token: state.token.token,
     validToken: state.token.validToken,
+    appDrawerIsOpen: state.appSettings.appDrawerIsOpen,
   }),
   dispatch => ({
     setTokenIsValid: () => dispatch(setTokenIsValid()),
     setTokenIsNotValid: () => dispatch(setTokenIsNotValid()),
+    toggleAppDrawer: () => dispatch(toggleAppDrawer()),
   })
 )
 
