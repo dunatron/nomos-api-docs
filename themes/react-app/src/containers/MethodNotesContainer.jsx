@@ -1,8 +1,5 @@
 import React, { Component } from "react"
-import { withStyles } from "material-ui/styles"
-import List, { ListItem, ListItemText } from "material-ui/List"
 import { gql, compose, graphql, withApollo } from "react-apollo/index"
-import { connect } from "react-redux"
 import { withRouter } from "react-router"
 import Loader from "../components/Loader"
 import NotesTable from "../components/NotesTable"
@@ -33,6 +30,7 @@ class MethodNotesContainer extends Component {
       getMethodNotes: { error, loading, getSingleMethod },
     } = this.props
 
+    console.log("MethodNotesContainer props ", this.props)
     console.log("getMethodNotes ", this.props.getMethodNotes)
 
     if (loading) {
@@ -75,22 +73,12 @@ class MethodNotesContainer extends Component {
   }
 }
 
-const reduxWrapper = connect(
-  state => ({
-    methodID: state.codeExamples.ID,
-  }),
-  dispatch => ({
-    setCurrentMethod: method => dispatch(setCurrentMethod(method)),
-  })
-)
-
 export default compose(
   withRouter,
   withApollo,
-  reduxWrapper,
   graphql(GET_METHOD_NOTES, {
     name: "getMethodNotes",
     options: props => ({ variables: { ID: props.methodID || null } }),
-    //options: props => ({ variables: { ID: 3 } }),
+    // options: props => ({ variables: { ID: 3 } }),
   })
 )(MethodNotesContainer)

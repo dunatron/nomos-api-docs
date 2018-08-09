@@ -1,5 +1,6 @@
 import React from "react"
 import { gql, compose, graphql } from "react-apollo"
+import { withRouter } from "react-router"
 import { propType as fragmentPropType } from "graphql-anywhere"
 import PropTypes from "prop-types"
 import { withStyles } from "material-ui/styles"
@@ -36,6 +37,8 @@ const MethodLinkCard = props => {
   } = props
   const bull = <span className={classes.bullet}>•</span>
 
+  console.log("MethodLinkCard props ", props)
+
   return (
     <div>
       <Card className={classes.card}>
@@ -52,11 +55,17 @@ const MethodLinkCard = props => {
           </Typography>
         </CardContent>
         <CardActions>
-          <Button size="small">Details</Button>
+          <Button size="small" onClick={() => routeToMethod(props.history, ID)}>
+            Details
+          </Button>
         </CardActions>
       </Card>
     </div>
   )
+}
+
+const routeToMethod = (history, id) => {
+  history.push(`/method/${id}`)
 }
 
 MethodLinkCard.fragments = {
@@ -77,4 +86,9 @@ MethodLinkCard.propTypes = {
   link: PropTypes.string.isRequired,
 }
 
-export default withStyles(styles)(MethodLinkCard)
+// export default webkitConvertPointFromNodeToPage(MethodLinkCard)
+
+export default compose(
+  withRouter,
+  withStyles(styles)
+)(MethodLinkCard)

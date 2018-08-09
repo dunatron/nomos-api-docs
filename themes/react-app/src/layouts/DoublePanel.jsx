@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from "react"
+import { withRouter } from "react-router"
 import { withApollo, compose } from "react-apollo/index"
 import { withStyles } from "material-ui/styles"
 import Paper from "material-ui/Paper"
+import BackButton from "../components/BackButton"
 
 const styles = theme => ({
   root: {
@@ -22,10 +24,14 @@ const styles = theme => ({
 
 class DoublePanel extends Component {
   render() {
-    const { leftSection, rightSection, classes } = this.props
+    const { leftSection, rightSection, classes, history } = this.props
+    const { pathname } = history.location
+
+    console.log("DoublePanel Props ", this.props)
 
     return (
       <Fragment>
+        {pathname && pathname !== "/" && <BackButton />}
         {leftSection && (
           <Paper className={classes.root}>
             {leftSection.map((component, idx) => {
@@ -46,6 +52,7 @@ class DoublePanel extends Component {
 }
 
 export default compose(
+  withRouter,
   withApollo,
   withStyles(styles)
 )(DoublePanel)
