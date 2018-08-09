@@ -68,7 +68,7 @@ class NavBar extends Component {
         </Hidden>
         {pathname && pathname !== "/" && <BackButton />}
         <Typography variant="title" color="inherit" className={classes.flex}>
-          Title
+          TrN
         </Typography>
         <IconButton
           className={classes.menuButton}
