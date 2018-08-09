@@ -1,8 +1,18 @@
-import React, { Component } from "react"
+import React, { Component, Fragment } from "react"
+
+//layout
+import SinglePanel from "../layouts/SinglePanel"
+
+//containers
+import CategoriesListContainer from "../containers/CategoriesListContainer"
 
 class MethodListPage extends Component {
   render() {
-    return <div>Methods list page</div>
+    return (
+      <Fragment>
+        <SinglePanel children={[<CategoriesListContainer />]} />
+      </Fragment>
+    )
   }
 }
 
