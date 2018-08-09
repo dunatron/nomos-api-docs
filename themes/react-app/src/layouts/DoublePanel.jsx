@@ -31,9 +31,9 @@ class DoublePanel extends Component {
 
     return (
       <Fragment>
-        {pathname && pathname !== "/" && <BackButton />}
         {leftSection && (
           <Paper className={classes.root}>
+            {pathname && pathname !== "/" && <BackButton />}
             {leftSection.map((component, idx) => {
               return component
             })}

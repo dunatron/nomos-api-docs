@@ -10,6 +10,7 @@ import Menu, { MenuItem } from "material-ui/Menu"
 import { withRouter } from "react-router"
 import { compose } from "react-apollo/index"
 import Hidden from "material-ui/Hidden"
+import BackButton from "./BackButton"
 
 const styles = theme => ({
   root: {
@@ -49,7 +50,8 @@ class NavBar extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, history } = this.props
+    const { pathname } = history.location
     const { auth, anchorEl } = this.state
     const open = Boolean(anchorEl)
 
@@ -64,6 +66,7 @@ class NavBar extends Component {
             <MenuIcon />
           </IconButton>
         </Hidden>
+        {pathname && pathname !== "/" && <BackButton />}
         <Typography variant="title" color="inherit" className={classes.flex}>
           Title
         </Typography>
@@ -93,14 +96,15 @@ class NavBar extends Component {
           }}
           open={open}
           onClose={this.handleClose}>
-          <MenuItem onClick={() => this.handlePageChange("/")}>
-            Main Docs
-          </MenuItem>
+          <MenuItem onClick={() => this.handlePageChange("/")}>Home</MenuItem>
           <MenuItem onClick={() => this.handlePageChange("/about")}>
             About Page
           </MenuItem>
           <MenuItem onClick={() => this.handlePageChange("/create")}>
             Create Docs
+          </MenuItem>
+          <MenuItem onClick={() => this.handlePageChange("/methods")}>
+            Methods List
           </MenuItem>
         </Menu>
       </Toolbar>

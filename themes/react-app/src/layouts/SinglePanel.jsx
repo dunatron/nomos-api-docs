@@ -32,9 +32,9 @@ class SinglePanel extends Component {
 
     return (
       <Fragment>
-        {pathname && pathname !== "/" && <BackButton />}
         {children && (
           <Paper className={classes.root}>
+            {pathname && pathname !== "/" && <BackButton />}
             {children.map((component, idx) => {
               return component
             })}
