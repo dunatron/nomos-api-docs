@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react"
 import { connect } from "react-redux"
-import { withApollo, compose } from "react-apollo/index"
-import KeyPressComponent from "../components/KeyPressComponent"
+import { withApollo, compose } from "react-apollo"
 import KeyHandler, { KEYPRESS } from "react-key-handler"
 
 class DocGenerator extends Component {
@@ -12,6 +11,7 @@ class DocGenerator extends Component {
 
     this.state = {
       started: false,
+      screenDPI: 96,
     }
   }
 
@@ -24,6 +24,53 @@ class DocGenerator extends Component {
     this.setState({
       started: true,
     })
+  }
+
+  renderPage = screenDPI => {
+    switch (screenDPI) {
+      case 72:
+        return
+      case 96:
+        return {
+          width: 794,
+          height: 1123,
+        }
+      case 150:
+        return
+      case 300:
+        return
+      case 600:
+        return
+      case 720:
+        return
+      case 1200:
+        return
+      case 1440:
+        return
+      case 2400:
+        return
+      case 2880:
+        return
+
+      default:
+        return
+    }
+  }
+
+  renderDocumentGenerator = () => {
+    const { screenDPI } = this.state
+    const pageDimensions = this.renderPage(screenDPI)
+    console.log("pageDimensions", pageDimensions)
+    return (
+      <div
+        style={{
+          border: "1px solid purple",
+          height: `${pageDimensions.height}px`,
+          width: `${pageDimensions.width}px`,
+        }}>
+        Hi
+      </div>
+    )
   }
 
   /**
@@ -39,7 +86,7 @@ class DocGenerator extends Component {
           keyValue="Enter"
           onKeyHandle={v => this.startDocument(v)}
         />
-        {started && "WE have started the doc generator "}
+        {started && this.renderDocumentGenerator()}
       </Fragment>
     )
   }
