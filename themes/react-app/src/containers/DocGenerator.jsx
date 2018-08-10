@@ -9,10 +9,9 @@ class DocGenerator extends Component {
 
   constructor(props) {
     super(props)
-    const keyPressConf = [{ keyVal: "Enter", funcCall: this.startDocument() }]
+
     this.state = {
       started: false,
-      keyPressConf: keyPressConf,
     }
   }
 
@@ -35,20 +34,11 @@ class DocGenerator extends Component {
     return (
       <Fragment>
         <div>The doc gen container. Press "enter" to start</div>
-        {/* <KeyHandler
+        <KeyHandler
           keyEventName={KEYPRESS}
           keyValue="Enter"
           onKeyHandle={v => this.startDocument(v)}
-        /> */}
-        {keyPressConf.map(keyType => {
-          return (
-            <KeyHandler
-              keyEventName={KEYPRESS}
-              keyValue={keyType.keyVal}
-              onKeyHandle={v => this[keyType.funcCall]}
-            />
-          )
-        })}
+        />
         {started && "WE have started the doc generator "}
       </Fragment>
     )
