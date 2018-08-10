@@ -106,6 +106,9 @@ class NavBar extends Component {
           <MenuItem onClick={() => this.handlePageChange("/methods")}>
             Methods List
           </MenuItem>
+          <MenuItem onClick={() => this.handlePageChange("/docgen")}>
+            Doc Gen
+          </MenuItem>
         </Menu>
       </Toolbar>
     )

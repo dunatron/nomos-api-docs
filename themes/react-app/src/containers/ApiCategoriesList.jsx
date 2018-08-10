@@ -34,6 +34,13 @@ class ApiCategoriesList extends Component {
       getApiCategoriesWithData: { loading, readCategories },
     } = this.props
 
+    console.log("loading ", loading)
+    console.log(
+      "getApiCategoriesWithData ",
+      this.props.getApiCategoriesWithData
+    )
+    console.log("readCategories ", readCategories)
+
     if (loading) {
       return (
         <Loader

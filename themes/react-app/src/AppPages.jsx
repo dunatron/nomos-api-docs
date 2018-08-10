@@ -13,6 +13,7 @@ import { withRouter } from "react-router"
 // Pages
 import HomePage from "./pages/HomePage"
 import AboutPage from "./pages/AboutPage"
+import DocGenPage from "./pages/DocGenPage"
 import MethodListPage from "./pages/MethodListPage"
 import MethodDetailsPage from "./pages/MethodDetailsPage"
 
@@ -65,6 +66,8 @@ class AppPages extends Component {
           {/* <Route exact path="/" component={MainContainer} /> */}
           <Route exact path="/" component={HomePage} />
           <Route exact path="/about" component={AboutPage} />
+          <Route exact path="/docgen" component={DocGenPage} />
+
           <Route exact path="/methods" component={MethodListPage} />
           <Route path="/method/:id" component={MethodDetailsPage} />
           <Route path="/create" component={CreateDocsContainer} />

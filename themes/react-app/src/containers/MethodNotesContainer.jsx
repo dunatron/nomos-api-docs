@@ -11,8 +11,11 @@ export const GET_METHOD_NOTES = gql`
       Name
       Description
       MethodNotes {
+        ID
         Name
         Description
+        Created
+        LastEdited
       }
     }
   }

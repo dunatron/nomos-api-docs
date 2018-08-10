@@ -42,6 +42,12 @@ const PageLinks = props => {
           </ListItemIcon>
           <ListItemText primary="Create Stuff" />
         </ListItem>
+        <ListItem button onClick={() => props.history.push("/docgen")}>
+          <ListItemIcon>
+            <DraftsIcon />
+          </ListItemIcon>
+          <ListItemText primary="Doc Gen" />
+        </ListItem>
       </List>
     </div>
   )
