@@ -5,6 +5,8 @@ import { compose } from "react-apollo"
 import Button from "material-ui/Button"
 import { withRouter } from "react-router"
 import { setDPI } from "../actions/docGenActions"
+import { setCurrentMethod } from "../actions/codeExamplesActions"
+import { toggleAppDrawer } from "../actions/appSettings"
 
 const styles = theme => ({
   button: {
@@ -43,19 +45,28 @@ class PickPageType extends Component {
   setScreenDPI = () => {
     const currentScreenDPI = this.state.screenDPI
     console.log("PickPageType Set DPI ", currentScreenDPI)
-    setDPI(currentScreenDPI)
+    const testMethod = {
+      ID: 3,
+      Name: "test Name",
+      Description: "test desc",
+      HttpRequest: "Test",
+      PermittedCall: "test",
+    }
+    setCurrentMethod(testMethod)
+    this.props.setDPI(currentScreenDPI)
+    this.props.toggleAppDrawer()
   }
 
   getDPI = () => {
     var dpi_x = document.getElementById("dpi").offsetWidth
     var dpi_y = document.getElementById("dpi").offsetHeight
-    var width = screen.width / dpi_x
-    var height = screen.height / dpi_y
+    // var width = screen.width / dpi_x
+    // var height = screen.height / dpi_y
     console.group("Damn, Daniel. FBI keep bringing them all white vans through")
     console.log("dpi_x", dpi_x)
     console.log("dpi_y", dpi_y)
-    console.log("width", width)
-    console.log("height", height)
+    // console.log("width", width)
+    // console.log("height", height)
     console.groupEnd()
     this.setState({
       ...this.state,
@@ -64,16 +75,22 @@ class PickPageType extends Component {
   }
 
   render() {
-    const { classes } = this.props
+    const { classes, appDrawerIsOpen } = this.props
+
+    console.log("umm appDrawerIsOpen? ", appDrawerIsOpen)
     return (
-      <Button
-        className={classes.button}
-        variant="raised"
-        color="primary"
-        type="submit"
-        onClick={() => this.setScreenDPI()}>
-        SET PAGE DPI
-      </Button>
+      <div>
+        <div>is open? {appDrawerIsOpen ? "Tis open " : "closed "}</div>
+
+        <Button
+          className={classes.button}
+          variant="raised"
+          color="primary"
+          type="submit"
+          onClick={() => this.setScreenDPI()}>
+          SET PAGE DPI
+        </Button>
+      </div>
     )
   }
 
@@ -85,9 +102,12 @@ class PickPageType extends Component {
 const reduxWrapper = connect(
   (state, ownProps) => ({
     docGenAttributes: state.docGen.pageAttributes,
+    appDrawerIsOpen: state.appSettings.appDrawerIsOpen,
   }),
   dispatch => ({
     setDPI: dpi => dispatch(setDPI(dpi)),
+    setCurrentMethod: method => dispatch(setCurrentMethod(method)),
+    toggleAppDrawer: () => dispatch(toggleAppDrawer()),
   })
 )
 

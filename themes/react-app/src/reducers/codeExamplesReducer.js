@@ -9,6 +9,7 @@ const defaultState = {
 export default (state = defaultState, action) => {
   switch (action.type) {
     case "SET_CURRENT_METHOD":
+      console.log("UMM WTF ?")
       const {
         ID,
         Name,
