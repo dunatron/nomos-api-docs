@@ -20,6 +20,10 @@ class DocGenPage extends Component {
     }
   }
 
+  /**
+   * Thought: when saving the state. save them as component type, ie: name. and its state as a Json Blob. Then when we call it we can reinstall as component name und unravil its data
+   */
+
   componentDidMount() {
     this.setState({
       hasMounted: true,
@@ -44,4 +48,3 @@ class DocGenPage extends Component {
 }
 
 export default DocGenPage
-

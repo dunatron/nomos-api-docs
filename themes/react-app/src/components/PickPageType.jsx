@@ -4,7 +4,7 @@ import { withStyles } from "material-ui/styles"
 import { compose } from "react-apollo"
 import Button from "material-ui/Button"
 import { withRouter } from "react-router"
-import { setDPI } from "../actions/docGenActions"
+import { setDPI, setPageType } from "../actions/docGenActions"
 import { setCurrentMethod } from "../actions/codeExamplesActions"
 import { toggleAppDrawer } from "../actions/appSettings"
 
@@ -57,6 +57,10 @@ class PickPageType extends Component {
     this.props.toggleAppDrawer()
   }
 
+  setPageType = type => {
+    this.props.setPageType(type)
+  }
+
   getDPI = () => {
     var dpi_x = document.getElementById("dpi").offsetWidth
     var dpi_y = document.getElementById("dpi").offsetHeight
@@ -90,6 +94,22 @@ class PickPageType extends Component {
           onClick={() => this.setScreenDPI()}>
           SET PAGE DPI
         </Button>
+        <Button
+          className={classes.button}
+          variant="raised"
+          color="primary"
+          type="submit"
+          onClick={() => this.setPageType("A4")}>
+          A4
+        </Button>
+        <Button
+          className={classes.button}
+          variant="raised"
+          color="primary"
+          type="submit"
+          onClick={() => this.setPageType("A7")}>
+          A7
+        </Button>
       </div>
     )
   }
@@ -106,6 +126,7 @@ const reduxWrapper = connect(
   }),
   dispatch => ({
     setDPI: dpi => dispatch(setDPI(dpi)),
+    setPageType: type => dispatch(setPageType(type)),
     setCurrentMethod: method => dispatch(setCurrentMethod(method)),
     toggleAppDrawer: () => dispatch(toggleAppDrawer()),
   })

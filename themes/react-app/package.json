@@ -37,6 +37,7 @@
     "postcss-loader": "2.0.6",
     "promise": "8.0.1",
     "react": "^16.0.0",
+    "react-beautiful-dnd": "^9.0.0",
     "react-dev-utils": "^4.1.0",
     "react-dom": "^16.0.0",
     "react-key-handler": "^1.1.0",

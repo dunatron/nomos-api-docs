@@ -1,7 +1,32 @@
 import React, { Component, Fragment } from "react"
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd"
 import { connect } from "react-redux"
 import { withApollo, compose } from "react-apollo"
 import KeyHandler, { KEYPRESS } from "react-key-handler"
+import { updatePagePercentage } from "../actions/docGenActions"
+
+// Components
+import DocumentCanvas from "../components/docGen/DocumentCanvas"
+import PagePercentage from "../components/docGen/PagePercentage"
+import FontPicker from "../components/docGen/FontPicker"
+
+/**
+ *
+ * For this drag and drop to work for this mini application ->
+ * - DragDropContext or perhaps Droppable can be used on the fontPicker and page Picker. Can reorder whatever. Nice touch but...
+ * - the main point is to drag these elements onto other drag and drop contexts, in particular the one that wil be our canvas.
+ * as it will decide what to do with these. I.e It will initialise new components base on type in the canvas
+ *  - The idea of a fontMutator for every component
+ */
+const getDroppableClasses = isDraggingOver =>
+  classNames(styles.droppable, {
+    [styles.isDraggingOver]: isDraggingOver,
+  })
+
+const getDraggableClasses = isDragging =>
+  classNames(styles.draggable, {
+    [styles.isDragging]: isDragging,
+  })
 
 class DocGenerator extends Component {
   state = {}
@@ -12,6 +37,9 @@ class DocGenerator extends Component {
     this.state = {
       started: false,
       screenDPI: 96,
+      documentComponents: [
+        { type: "p", content: "Hi I am the contents of a paragraph component" },
+      ],
     }
   }
 
@@ -57,19 +85,85 @@ class DocGenerator extends Component {
     }
   }
 
+  onDragEnd = result => {
+    console.log("onDragEnd Finished ", result)
+    if (result.type === "DocumentCanvas") {
+      console.log("attempting to add new theng to canvas")
+      let docComps = this.state.documentComponents
+      docComps.push({ type: "p", content: "another font type" })
+      this.setState({
+        documentComponents: docComps,
+      })
+    }
+    // const { destination, draggableId } = result
+    // if (!destination) {
+    //   return
+    // }
+    // this.props.onMove(draggableId, destination.index)
+  }
+
+  onDragStart = () => {
+    console.log("onDragStart start ")
+    // if (window.navigator.vibrate) {
+    //   window.navigator.vibrate(100)
+    // }
+  }
+
   renderDocumentGenerator = () => {
     const { screenDPI } = this.state
+    const { docGen } = this.props
+    const { pageAttributes } = docGen
     const pageDimensions = this.renderPage(screenDPI)
-    console.log("pageDimensions", pageDimensions)
+
+    const calculatedPageHeight =
+      pageAttributes.pageHeight * (pageAttributes.percentage / 100)
+
+    const calculatedPageWidth =
+      pageAttributes.pageWidth * (pageAttributes.percentage / 100)
+
+    const h1FontSiz = 36 * (pageAttributes.percentage / 100)
+    const pFontStyle = 13 * (pageAttributes.percentage / 100)
+
+    console.log("calculatedPageHeight ", calculatedPageHeight)
+    console.log("DOc generator STATE ", this.state)
+
+    console.log("pageDimensions ", pageDimensions)
     return (
-      <div
-        style={{
-          border: "1px solid purple",
-          height: `${pageDimensions.height}px`,
-          width: `${pageDimensions.width}px`,
-        }}>
-        Hi
-      </div>
+      <DragDropContext
+        onDragEnd={this.onDragEnd}
+        onDragStart={this.onDragStart}>
+        <div>
+          <FontPicker />
+          <PagePercentage
+            percentage={pageAttributes.percentage}
+            onChange={v => {
+              console.log("Trying to change percentage ", v)
+              this.props.updatePagePercentage(v)
+            }}
+          />
+          <DocumentCanvas />
+          <div
+            style={{
+              border: "1px solid purple",
+              height: `${calculatedPageHeight}px`,
+              width: `${calculatedPageWidth}px`,
+            }}>
+            <h1 style={{ fontSize: `${h1FontSiz}px` }}>Static Page Title</h1>
+            {this.state.documentComponents.map(docComponent => {
+              return (
+                <div>
+                  <h1 style={{ fontSize: `${h1FontSiz}px` }}>
+                    TYPE: {docComponent.type}
+                  </h1>
+                  <p style={{ fontSize: `${pFontStyle}px` }}>
+                    contents: {docComponent.content}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </DragDropContext>
     )
   }
 
@@ -92,9 +186,15 @@ class DocGenerator extends Component {
   }
 }
 
-const reduxWrapper = connect(state => ({
-  CurrentMethod: state.codeExamples,
-}))
+const reduxWrapper = connect(
+  state => ({
+    docGen: state.docGen,
+  }),
+  dispatch => ({
+    updatePagePercentage: percentage =>
+      dispatch(updatePagePercentage(percentage)),
+  })
+)
 
 export default compose(
   withApollo,

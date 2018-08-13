@@ -5,3 +5,17 @@ export function setDPI(dpi) {
     payload: dpi,
   }
 }
+
+export function setPageType(type) {
+  return {
+    type: "SET_PAGE_TYPE",
+    payload: type,
+  }
+}
+
+export function updatePagePercentage(percentage) {
+  return {
+    type: "UPDATE_PAGE_PERCENTAGE",
+    payload: percentage,
+  }
+}
