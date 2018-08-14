@@ -10,6 +10,15 @@ import DocumentCanvas from "../components/docGen/DocumentCanvas"
 import PagePercentage from "../components/docGen/PagePercentage"
 import FontPicker from "../components/docGen/FontPicker"
 import StyleSettings from "../components/docGen/StyleSettings"
+import ShortCodePicker from "../components/docGen/ShortCodePicker"
+
+/**
+ * When document is loaded it is searched for these short codes and updated accordingly
+ */
+const SHORT_CODES = [
+  { name: "agreement date", value: "24/03/1991" },
+  { name: "agreement Name", value: "Heaths Awesome Agreement" },
+]
 
 /**
  *
@@ -20,7 +29,9 @@ import StyleSettings from "../components/docGen/StyleSettings"
  *  - The idea of a fontMutator for every component
  *
  * More: The idea that markdown is a kind of raw language to write in. Soooo we have our own components encapsulating these which transform the text.
- * We can then use the attributes on these components to build
+ * We can then use the attributes on these components to build.
+ * I think. We pass the component inFocus, or lastInFocus href or some ref to redux and also update the redux store with the state our component was in.
+ * the store then updates the state of the component using the href?
  */
 const getDroppableClasses = isDraggingOver =>
   classNames(styles.droppable, {
@@ -139,6 +150,7 @@ class DocGenerator extends Component {
         <div>
           <FontPicker />
           <StyleSettings />
+          <ShortCodePicker shortCodes={SHORT_CODES} />
           <PagePercentage
             percentage={pageAttributes.percentage}
             onChange={v => {

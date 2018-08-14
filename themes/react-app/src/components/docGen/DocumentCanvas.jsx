@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
 import H1Comp from "./Inputs/H1Comp"
+import PComp from "./Inputs/PComp"
 
 const styles = theme => ({})
 
@@ -38,6 +39,15 @@ const FontPicker = props => {
               if (fontComponent.type === "h1") {
                 return (
                   <H1Comp
+                    index={fcIndex}
+                    contents={fontComponent.content}
+                    percentage={pageAttributes.percentage}
+                  />
+                )
+              }
+              if (fontComponent.type === "p") {
+                return (
+                  <PComp
                     index={fcIndex}
                     contents={fontComponent.content}
                     percentage={pageAttributes.percentage}
