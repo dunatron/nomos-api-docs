@@ -5,7 +5,7 @@ import Input from "material-ui/Input/Input"
 
 const styles = theme => ({
   input: {
-    fontSize: "72px",
+    fontSize: "36px",
     width: "100%",
   },
 })
@@ -18,6 +18,17 @@ class H1Comp extends Component {
       fontSize: 36,
       fontColor: "#00bfff",
     }
+  }
+
+  onFocus = () => {
+    console.log(
+      "On Focus we will set the docGen actionBar to have the relevant containers state"
+    )
+    // There is a challenge here. We want to set the redux store state and update the state in here.
+    // I think we can do this with some sort of ref perhaps?
+    // nO NOT REALL. I STILL HAVE THE PROBLEM of wanting to update the state.
+    // Ask tim? I want an action bar that has say, fontSize, color, fontFamily etc.
+    // I want this to be help in the redux store and onBlur
   }
 
   onChange = value => {
@@ -41,6 +52,7 @@ class H1Comp extends Component {
               {...provided.draggableProps}
               {...provided.dragHandleProps}>
               <Input
+                onFocus={() => this.onFocus()}
                 className={classes.input}
                 style={{
                   fontSize: `${calculatedFontSize}px`,

@@ -7,7 +7,7 @@ const styles = theme => ({})
 
 const FontPicker = props => {
   const { classes } = props
-  const { pageDimensions, documentComponents } = props
+  const { pageAttributes, pageDimensions, documentComponents } = props
   return (
     <Fragment>
       <Droppable droppableId="fontDragAndDrop" type="DocumentCanvas">
@@ -21,7 +21,7 @@ const FontPicker = props => {
               backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
             }}
             {...provided.droppableProps}>
-            <h1>This Is the Document Canvas. Pages</h1>
+            {/* <h1>This Is the Document Canvas. Pages</h1>
             <p>
               Pages Will Exist in here. Pages will be composed of components
               dropped ed in here. Inside of here it will get create its own
@@ -33,10 +33,16 @@ const FontPicker = props => {
               component. That way wen we receive from server we can rinitialise
               these font components based on their type. And fill them with
               their data. fontSize, color, style, and of course content
-            </p>
-            {documentComponents.map(fontComponent => {
+            </p> */}
+            {documentComponents.map((fontComponent, fcIndex) => {
               if (fontComponent.type === "h1") {
-                return <H1Comp contents={fontComponent.content} />
+                return (
+                  <H1Comp
+                    index={fcIndex}
+                    contents={fontComponent.content}
+                    percentage={pageAttributes.percentage}
+                  />
+                )
               }
               return (
                 <div>

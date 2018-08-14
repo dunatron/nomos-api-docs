@@ -9,6 +9,7 @@ import { updatePagePercentage } from "../actions/docGenActions"
 import DocumentCanvas from "../components/docGen/DocumentCanvas"
 import PagePercentage from "../components/docGen/PagePercentage"
 import FontPicker from "../components/docGen/FontPicker"
+import StyleSettings from "../components/docGen/StyleSettings"
 
 /**
  *
@@ -17,6 +18,9 @@ import FontPicker from "../components/docGen/FontPicker"
  * - the main point is to drag these elements onto other drag and drop contexts, in particular the one that wil be our canvas.
  * as it will decide what to do with these. I.e It will initialise new components base on type in the canvas
  *  - The idea of a fontMutator for every component
+ *
+ * More: The idea that markdown is a kind of raw language to write in. Soooo we have our own components encapsulating these which transform the text.
+ * We can then use the attributes on these components to build
  */
 const getDroppableClasses = isDraggingOver =>
   classNames(styles.droppable, {
@@ -134,6 +138,7 @@ class DocGenerator extends Component {
         onDragStart={this.onDragStart}>
         <div>
           <FontPicker />
+          <StyleSettings />
           <PagePercentage
             percentage={pageAttributes.percentage}
             onChange={v => {
@@ -143,6 +148,7 @@ class DocGenerator extends Component {
           />
           <DocumentCanvas
             documentComponents={this.state.documentComponents}
+            pageAttributes={pageAttributes}
             pageDimensions={{
               height: calculatedPageHeight,
               width: calculatedPageWidth,
