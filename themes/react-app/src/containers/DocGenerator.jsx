@@ -22,6 +22,8 @@ const SHORT_CODES = [
 
 /**
  *
+ * use this for markdown or make own versio
+ * https://github.com/JedWatson/react-md-editor
  * For this drag and drop to work for this mini application ->
  * - DragDropContext or perhaps Droppable can be used on the fontPicker and page Picker. Can reorder whatever. Nice touch but...
  * - the main point is to drag these elements onto other drag and drop contexts, in particular the one that wil be our canvas.
