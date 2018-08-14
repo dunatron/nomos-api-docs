@@ -90,7 +90,7 @@ class DocGenerator extends Component {
     if (result.type === "DocumentCanvas") {
       console.log("attempting to add new theng to canvas")
       let docComps = this.state.documentComponents
-      docComps.push({ type: "p", content: "another font type" })
+      docComps.push({ type: "h1", content: "an h1 font component" })
       this.setState({
         documentComponents: docComps,
       })
@@ -141,7 +141,13 @@ class DocGenerator extends Component {
               this.props.updatePagePercentage(v)
             }}
           />
-          <DocumentCanvas />
+          <DocumentCanvas
+            documentComponents={this.state.documentComponents}
+            pageDimensions={{
+              height: calculatedPageHeight,
+              width: calculatedPageWidth,
+            }}
+          />
           <div
             style={{
               border: "1px solid purple",

@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from "react"
 import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
+import H1Comp from "./Inputs/H1Comp"
 
 const styles = theme => ({})
 
 const FontPicker = props => {
   const { classes } = props
+  const { pageDimensions, documentComponents } = props
   return (
     <Fragment>
       <Droppable droppableId="fontDragAndDrop" type="DocumentCanvas">
@@ -13,6 +15,9 @@ const FontPicker = props => {
           <div
             ref={provided.innerRef}
             style={{
+              border: "1px solid purple",
+              height: `${pageDimensions.height}px`,
+              width: `${pageDimensions.width}px`,
               backgroundColor: snapshot.isDraggingOver ? "blue" : "grey",
             }}
             {...provided.droppableProps}>
@@ -25,10 +30,21 @@ const FontPicker = props => {
             <p>
               Now we can save this canvas away with these created compionents.
               we save the type. and we will also roll up the state of each
-              component. That way wen we recieve from server we can rinitialise
+              component. That way wen we receive from server we can rinitialise
               these font components based on their type. And fill them with
-              theior data. fontSize, color, style, and of course content
+              their data. fontSize, color, style, and of course content
             </p>
+            {documentComponents.map(fontComponent => {
+              if (fontComponent.type === "h1") {
+                return <H1Comp contents={fontComponent.content} />
+              }
+              return (
+                <div>
+                  <h1>{fontComponent.type}</h1>
+                  <p>{fontComponent.content}</p>
+                </div>
+              )
+            })}
             {provided.placeholder}
           </div>
         )}

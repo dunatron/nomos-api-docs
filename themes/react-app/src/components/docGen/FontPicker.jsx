@@ -3,7 +3,9 @@ import { Droppable, Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
 import Button from "material-ui/Button"
 
-const styles = theme => ({})
+const styles = theme => ({
+  
+})
 
 const FontPicker = props => {
   const { classes } = props
