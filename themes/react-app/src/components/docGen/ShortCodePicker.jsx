@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
-import Input from "material-ui/Input/Input"
 
 const styles = theme => ({
   input: {
@@ -13,6 +12,7 @@ const styles = theme => ({
 class ShortCodePicker extends Component {
   render() {
     const { shortCodes } = this.props
+    
     return (
       <div>
         <h2>Short Codes</h2>

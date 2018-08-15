@@ -2,6 +2,7 @@ import React, { Component, Fragment } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
 import Input from "material-ui/Input/Input"
+import DisplayMarkdown from "../DisplayMarkdown"
 
 const styles = theme => ({
   input: {
@@ -51,6 +52,7 @@ class PComp extends Component {
                 value={contents}
                 onChange={e => this.onChange(e.target.value)}
               />
+              <DisplayMarkdown />
             </div>
           )}
         </Draggable>

@@ -2,6 +2,16 @@ import React, { Component, Fragment } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
 import Input from "material-ui/Input/Input"
+// import MarkdownEditor from "react-markdown-editor"
+// const MarkdownEditor = require("react-markdown-editor").MarkdownEditor
+
+import { MarkdownEditor } from "react-markdown-editor"
+
+// var TestComponent = React.createClass({
+//   render: function() {
+//     return <MarkdownEditor initialContent="Test" iconsSet="font-awesome" />
+//   },
+// })
 
 const styles = theme => ({
   input: {
@@ -63,6 +73,11 @@ class H1Comp extends Component {
                 value={contents}
                 onChange={e => this.onChange(e.target.value)}
               />
+              <MarkdownEditor initialContent="test" iconsSet="font-awesome" />
+              {/* <MarkdownEditor
+                initialContent={this.state.contents}
+                iconsSet="materialize-ui"
+              /> */}
             </div>
           )}
         </Draggable>
