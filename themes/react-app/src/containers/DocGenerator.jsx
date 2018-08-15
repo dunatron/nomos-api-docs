@@ -11,6 +11,8 @@ import PagePercentage from "../components/docGen/PagePercentage"
 import FontPicker from "../components/docGen/FontPicker"
 import StyleSettings from "../components/docGen/StyleSettings"
 import ShortCodePicker from "../components/docGen/ShortCodePicker"
+import MarkdownEditor from "../components/MarkdownEditor"
+import "../components/MarkdownEditor/codemirrorOverride.css"
 
 /**
  * When document is loaded it is searched for these short codes and updated accordingly
@@ -151,6 +153,7 @@ class DocGenerator extends Component {
         onDragEnd={this.onDragEnd}
         onDragStart={this.onDragStart}>
         <div>
+          <MarkdownEditor title="Foo" code="# Fancy markdown editor!" />
           <FontPicker />
           <StyleSettings />
           <ShortCodePicker shortCodes={SHORT_CODES} />

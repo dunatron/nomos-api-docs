@@ -4,6 +4,7 @@ import { withStyles } from "material-ui/styles"
 import Input from "material-ui/Input/Input"
 // import MarkdownEditor from "react-markdown-editor"
 // const MarkdownEditor = require("react-markdown-editor").MarkdownEditor
+import DisplayMarkdown from "../DisplayMarkdown"
 
 import { MarkdownEditor } from "react-markdown-editor"
 
@@ -27,6 +28,7 @@ class H1Comp extends Component {
       contents: this.props.contents,
       fontSize: 36,
       fontColor: "#00bfff",
+      isFocused: false,
     }
   }
 
@@ -39,6 +41,15 @@ class H1Comp extends Component {
     // nO NOT REALL. I STILL HAVE THE PROBLEM of wanting to update the state.
     // Ask tim? I want an action bar that has say, fontSize, color, fontFamily etc.
     // I want this to be help in the redux store and onBlur
+    this.setState({
+      isFocused: true,
+    })
+  }
+
+  onBlur = () => {
+    this.setState({
+      isFocused: false,
+    })
   }
 
   onChange = value => {
@@ -49,7 +60,7 @@ class H1Comp extends Component {
 
   render() {
     const { index, percentage, classes } = this.props
-    const { contents, fontSize, fontColor } = this.state
+    const { contents, fontSize, fontColor, isFocused } = this.state
 
     const calculatedFontSize = fontSize * (percentage / 100)
 
@@ -61,8 +72,10 @@ class H1Comp extends Component {
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}>
+              <p>focused: {isFocused}</p>
               <Input
                 onFocus={() => this.onFocus()}
+                onBlur={() => this.onBlur()}
                 className={classes.input}
                 style={{
                   fontSize: `${calculatedFontSize}px`,
@@ -74,6 +87,7 @@ class H1Comp extends Component {
                 onChange={e => this.onChange(e.target.value)}
               />
               <MarkdownEditor initialContent="test" iconsSet="font-awesome" />
+              <DisplayMarkdown />
               {/* <MarkdownEditor
                 initialContent={this.state.contents}
                 iconsSet="materialize-ui"

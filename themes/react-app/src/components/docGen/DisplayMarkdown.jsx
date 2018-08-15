@@ -4,7 +4,7 @@ import { withStyles } from "material-ui/styles"
 
 const styles = theme => ({})
 const DisplayMarkdown = props => {
-  const { classes } = props
+  const { classes, content } = props
   console.log("Lets look at markdown ", markdown)
   console.log(markdown.toHTML("Hello *World*!"))
   return (
