@@ -3,14 +3,15 @@ import PropTypes from "prop-types"
 import FlatButton from "material-ui/Button"
 
 const Button = (
-  { onClick, style, icon, openDialog, isImageDialog },
+  { onClick, style, icon, openDialog, isImageDialog, text },
   { toggleDialog }
 ) => (
   <FlatButton
     onClick={openDialog ? toggleDialog(isImageDialog) : onClick} //eslint-disable-line
     style={{ ...style, minWidth: "36px" }}
-    icon={icon}
-  />
+    icon={icon}>
+    {text}
+  </FlatButton>
 )
 
 Button.propTypes = {

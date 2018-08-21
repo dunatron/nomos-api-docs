@@ -18,11 +18,11 @@ export default class MarkdownEditor extends React.Component {
     title: PropTypes.string,
   }
 
-  constructor() {
-    super()
+  constructor(props) {
+    super(props)
     this.state = {
       tokens: [],
-      code: "",
+      code: this.props.code,
       isDialogOpen: false,
       isImageDialog: false,
     }
@@ -59,6 +59,7 @@ export default class MarkdownEditor extends React.Component {
   }
 
   updateCode(newCode) {
+    this.props.updateSource(newCode)
     this.setState({
       code: newCode,
     })
@@ -67,7 +68,9 @@ export default class MarkdownEditor extends React.Component {
   render() {
     const options = {
       lineNumbers: true,
-      mode: "markdown",
+      // mode: "markdown",
+      mode: "htmlmixed",
+      //htmlmixed
     }
 
     return (

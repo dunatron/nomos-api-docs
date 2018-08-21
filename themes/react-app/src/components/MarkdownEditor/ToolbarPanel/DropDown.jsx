@@ -4,13 +4,19 @@ import { MenuItem, IconMenu } from "material-ui/Menu"
 import IconButton from "material-ui/IconButton"
 
 const DropDown = ({ icon, style, options, onItemTouchTap }) => (
-  <IconMenu
-    onItemTouchTap={onItemTouchTap}
-    iconButtonElement={<IconButton style={style}>{icon}</IconButton>}>
+  // <IconMenu
+  //   onItemTouchTap={onItemTouchTap}
+  //   iconButtonElement={<IconButton style={style}>{icon}</IconButton>}>
+  //   {/* {options.map((option, i) => (
+  //     <MenuItem key={i} {...option} />
+  //   ))} */}
+  // </IconMenu>
+  <div>
+    {" "}
     {options.map((option, i) => (
       <MenuItem key={i} {...option} />
     ))}
-  </IconMenu>
+  </div>
 )
 
 DropDown.propTypes = {

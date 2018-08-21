@@ -1,4 +1,8 @@
 import React, { Component, Fragment } from "react"
+import injectTapEventPlugin from "react-tap-event-plugin"
+import "../components/MarkdownEditor/codemirrorOverride.css"
+import "codemirror/lib/codemirror.css" // import codemirror styles
+injectTapEventPlugin()
 
 import PickPageType from "../components/PickPageType"
 import DocGenerator from "../containers/DocGenerator"

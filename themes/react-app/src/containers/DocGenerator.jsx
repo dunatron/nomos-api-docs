@@ -23,6 +23,14 @@ const SHORT_CODES = [
 ]
 
 /**
+ * Choices: 
+ * Online collab via pusher: https://pusher.com/tutorials/collaborative-text-editor-javascript/ 
+ * pixel perfect render: https://www.sitepoint.com/creating-an-html5-based-document-editor/
+ * html wysywig but good: https://code.tutsplus.com/tutorials/create-a-wysiwyg-editor-with-the-contenteditable-attribute--cms-25657
+ * I still think markdown is the choice here. So build rich components which can be edited . color size position etc
+ */
+
+/**
  *
  * use this for markdown or make own versio
  * https://github.com/JedWatson/react-md-editor
@@ -59,6 +67,10 @@ class DocGenerator extends Component {
       screenDPI: 96,
       documentComponents: [
         { type: "p", content: "Hi I am the contents of a paragraph component" },
+        {
+          type: "h1",
+          content: "I am a default header. could even be loaded from template",
+        },
       ],
     }
   }

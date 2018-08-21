@@ -1,36 +1,53 @@
 import React from "react"
+import PropTypes from "prop-types"
+import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui"
 
-const ToolBarMenu = () => {
-  return <div>THE FUCKEN TOOLBAR MENIU</div>
-}
+// import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar"
+import ToolbarSection from "./ToolbarSection"
+import getButtonsSchema from "./buttonsSchema"
 
-export default ToolBarMenu
+// const ToolBarMenu = () => {
+//   return <div>THE FUCKEN TOOLBAR MENIU</div>
+// }
+
+// export default ToolBarMenu
 
 // import PropTypes from "prop-types"
 // import { Toolbar, ToolbarGroup, ToolbarTitle } from "material-ui/Toolbar"
 // import ToolbarSection from "./ToolbarSection"
 // import getButtonsSchema from "./buttonsSchema"
 
-// const ToolbarPanel = ({ cm, tokens, title }) => (
-//   <Toolbar>
-//     <ToolbarGroup firstChild>
-//       {getButtonsSchema(cm, tokens).map((section, i) => (
-//         <ToolbarSection key={i} items={section} />
-//       ))}
-//     </ToolbarGroup>
-//     <ToolbarGroup>
-//       <ToolbarTitle text={title} />
-//     </ToolbarGroup>
-//   </Toolbar>
-// )
+/**
+ *
+ * We will have to pass our own config into this
+ */
+const ToolbarPanel = ({ cm, tokens, title }) => (
+  <Toolbar>
+    {/* <ToolbarGroup firstChild>
+      {getButtonsSchema(cm, tokens).map((section, i) => (
+        <ToolbarSection key={i} items={section} />
+      ))}
+    </ToolbarGroup>
+    <ToolbarGroup>
+      <ToolbarTitle text={title} />
+    </ToolbarGroup> */}
+    {/* {getButtonsSchema(cm, tokens).map((section, i) => (
+        <ToolbarSection key={i} items={section} />
+      ))} */}
+    {getButtonsSchema(cm, tokens).map((section, i) => {
+      console.log("A section ", section)
+      return <ToolbarSection key={i} items={section} />
+    })}
+  </Toolbar>
+)
 
-// ToolbarPanel.propTypes = {
-//   cm: PropTypes.object, //eslint-disable-line
-//   tokens: PropTypes.arrayOf(PropTypes.string),
-//   title: PropTypes.string,
-// }
+ToolbarPanel.propTypes = {
+  cm: PropTypes.object, //eslint-disable-line
+  tokens: PropTypes.arrayOf(PropTypes.string),
+  title: PropTypes.string,
+}
 
-// export default ToolbarPanel
+export default ToolbarPanel
 
 // export default class ToolBarMenu extends React.Component {
 //   static propTypes = {

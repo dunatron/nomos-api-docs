@@ -2,11 +2,8 @@ import React, { Component, Fragment } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { withStyles } from "material-ui/styles"
 import Input from "material-ui/Input/Input"
-// import MarkdownEditor from "react-markdown-editor"
-// const MarkdownEditor = require("react-markdown-editor").MarkdownEditor
+import MarkdownEditor from "../../MarkdownEditor"
 import DisplayMarkdown from "../DisplayMarkdown"
-
-import { MarkdownEditor } from "react-markdown-editor"
 
 // var TestComponent = React.createClass({
 //   render: function() {
@@ -69,11 +66,22 @@ class H1Comp extends Component {
         <Draggable draggableId={`h1-draggable-${index}`} index={index}>
           {(provided, snapshot) => (
             <div
+              onFocus={() => this.onFocus()}
+              onBlur={() => this.onBlur()}
               ref={provided.innerRef}
               {...provided.draggableProps}
               {...provided.dragHandleProps}>
-              <p>focused: {isFocused}</p>
-              <Input
+              <p>
+                focused: {isFocused}
+                <div
+                  style={{ border: "1px solid red" }}
+                  onClick={() =>
+                    this.setState({ isFocused: !this.state.isFocused })
+                  }>
+                  Set Focus
+                </div>
+              </p>
+              {/* <Input
                 onFocus={() => this.onFocus()}
                 onBlur={() => this.onBlur()}
                 className={classes.input}
@@ -85,9 +93,17 @@ class H1Comp extends Component {
                 type="text"
                 value={contents}
                 onChange={e => this.onChange(e.target.value)}
-              />
-              <MarkdownEditor initialContent="test" iconsSet="font-awesome" />
-              <DisplayMarkdown />
+              /> */}
+              {isFocused && (
+                <MarkdownEditor
+                  title="Foo"
+                  code={this.state.contents}
+                  updateSource={markdown => {
+                    this.onChange(markdown)
+                  }}
+                />
+              )}
+              <DisplayMarkdown markdownContent={this.state.contents} />
               {/* <MarkdownEditor
                 initialContent={this.state.contents}
                 iconsSet="materialize-ui"

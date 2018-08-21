@@ -108,11 +108,13 @@ const getSchema = (cm, tokens) => {
         ),
       },
       {
+        text: "Bold",
         style: { ...getActiveStyle("strong") },
         icon: <Bold color={lightBlack} />,
         onClick: isActiveToken("strong", tokens) ? cancelBold : formatBold,
       },
       {
+        text: "Italic",
         style: getActiveStyle("em"),
         icon: <Italic color={lightBlack} />,
         onClick: isActiveToken("em", tokens) ? cancelItalic : formatItalic,
