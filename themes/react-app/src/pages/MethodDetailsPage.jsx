@@ -6,6 +6,7 @@ import DoublePanelLayout from "../layouts/DoublePanel"
 import CurrentMethodContainer from "../containers/CurrentMethodContainer"
 import CodeExamples from "../containers/CodeExamples"
 import MethodNotesContainer from "../containers/MethodNotesContainer"
+import AddMethodNote from "../components/AddMethodNote"
 
 const MethodDetailsPage = ({ match }) => {
   console.log("match ", match)
@@ -14,6 +15,7 @@ const MethodDetailsPage = ({ match }) => {
       leftSection={[
         <CurrentMethodContainer />,
         <MethodNotesContainer methodID={match.params.id} />,
+        <AddMethodNote methodID={match.params.id} />,
         <div>left component 1</div>,
         <div>left component 2</div>,
         <div>left component 3</div>,

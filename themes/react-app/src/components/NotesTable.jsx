@@ -18,6 +18,7 @@ import Tooltip from "material-ui/Tooltip"
 import DeleteIcon from "material-ui-icons/Delete"
 import FilterListIcon from "material-ui-icons/FilterList"
 import { lighten } from "material-ui/styles/colorManipulator"
+import CheckBoxSelection from "./Inputs/CheckBoxSelection"
 
 let counter = 0
 // function createData(name, calories, fat, carbs, protein) {
@@ -25,7 +26,8 @@ let counter = 0
 //   return { id: counter, name, calories, fat, carbs, protein }
 // }
 function createData({ ID, Name, Description, Created, LastEdited }) {
-  return { ID, Name, Description, Created, LastEdited }
+  counter += 1
+  return { id: counter, ID, Name, Description, Created, LastEdited }
 }
 
 /**
@@ -65,29 +67,38 @@ const rowsOld = [
   { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
 ]
 
-const rows = [
-  {
-    id: "Name",
-    numeric: false,
-    disablePadding: true,
-    label: "Name",
-  },
-  {
-    id: "Description",
-    numeric: false,
-    disablePadding: false,
-    label: "Description",
-  },
-  { id: "Created", numeric: false, disablePadding: false, label: "created" },
-  {
-    id: "LastEdited",
-    numeric: false,
-    disablePadding: false,
-    label: "last edited",
-  },
-  // { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  // { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
-]
+// const COLUMN_HEADERS = [
+//   {
+//     id: "Name",
+//     numeric: false,
+//     disablePadding: true,
+//     label: "Name",
+//     show: true,
+//   },
+//   {
+//     id: "Description",
+//     numeric: false,
+//     disablePadding: false,
+//     label: "Description",
+//     show: false,
+//   },
+//   {
+//     id: "Created",
+//     numeric: false,
+//     disablePadding: false,
+//     label: "created",
+//     show: true,
+//   },
+//   {
+//     id: "LastEdited",
+//     numeric: false,
+//     disablePadding: false,
+//     label: "last edited",
+//     show: false,
+//   },
+//   // { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
+//   // { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
+// ]
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -101,6 +112,7 @@ class EnhancedTableHead extends React.Component {
       orderBy,
       numSelected,
       rowCount,
+      columnHeaders,
     } = this.props
 
     return (
@@ -113,7 +125,7 @@ class EnhancedTableHead extends React.Component {
               onChange={onSelectAllClick}
             />
           </TableCell>
-          {rows.map(row => {
+          {columnHeaders.map(row => {
             return (
               <TableCell
                 key={row.id}
@@ -174,42 +186,65 @@ const toolbarStyles = theme => ({
   },
 })
 
+const FilterBar = props => {
+  return (
+    <div>
+      <h3>Here is the Filter Bar</h3>
+      <CheckBoxSelection
+        options={props.columnHeaders}
+        handleOptionChange={optionObj => {
+          console.log("Notes Table implement: ", optionObj)
+          props.updateShowProp(optionObj)
+        }}
+      />
+    </div>
+  )
+}
+
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes } = props
+  const { numSelected, classes, columnHeaders, title } = props
 
   return (
-    <Toolbar
-      className={classNames(classes.root, {
-        [classes.highlight]: numSelected > 0,
-      })}>
-      <div className={classes.title}>
-        {numSelected > 0 ? (
-          <Typography color="inherit" variant="subheading">
-            {numSelected} selected
-          </Typography>
-        ) : (
-          <Typography variant="title" id="tableTitle">
-            Nutrition
-          </Typography>
-        )}
-      </div>
-      <div className={classes.spacer} />
-      <div className={classes.actions}>
-        {numSelected > 0 ? (
-          <Tooltip title="Delete">
-            <IconButton aria-label="Delete">
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
-        ) : (
-          <Tooltip title="Filter list">
-            <IconButton aria-label="Filter list">
-              <FilterListIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
-    </Toolbar>
+    <div>
+      <Toolbar
+        className={classNames(classes.root, {
+          [classes.highlight]: numSelected > 0,
+        })}>
+        <div className={classes.title}>
+          {numSelected > 0 ? (
+            <Typography color="inherit" variant="subheading">
+              {numSelected} selected
+            </Typography>
+          ) : (
+            <Typography variant="title" id="tableTitle">
+              {title}
+            </Typography>
+          )}
+        </div>
+        <div className={classes.spacer} />
+        <div className={classes.actions}>
+          {numSelected > 0 ? (
+            <Tooltip title="Delete">
+              <IconButton aria-label="Delete">
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          ) : (
+            <Tooltip title="Filter list">
+              <IconButton aria-label="Filter list">
+                <FilterListIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </div>
+      </Toolbar>
+      <Toolbar>
+        <FilterBar
+          columnHeaders={columnHeaders}
+          updateShowProp={prop => props.updateShowProp(prop)}
+        />
+      </Toolbar>
+    </div>
   )
 }
 
@@ -226,7 +261,8 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
   },
   table: {
-    minWidth: 1020,
+    // minWidth: 1020,
+    minWidth: "100%",
   },
   tableWrapper: {
     overflowX: "auto",
@@ -237,7 +273,13 @@ class NotesTable extends React.Component {
   constructor(props) {
     super(props)
 
+    const propColumnHeaders = this.props.columnHeaders
+
     const notesData = this.props.notes.map(note => createData(note))
+    const displayColumns = propColumnHeaders.reduce(
+      (ac, column) => ({ ...ac, [column.id]: column.show }),
+      {}
+    )
 
     console.log("notesData ", notesData)
 
@@ -245,7 +287,9 @@ class NotesTable extends React.Component {
       order: "asc",
       orderBy: "calories",
       selected: [],
+      filterProps: [...displayColumns], // Ok when we click on filter Icon the FilterBar will update the state here
       data: notesData,
+      columnHeaders: propColumnHeaders,
       // data: [
       //   createData("Cupcake", 305, 3.7, 67, 4.3),
       //   createData("Donut", 452, 25.0, 51, 4.9),
@@ -264,6 +308,7 @@ class NotesTable extends React.Component {
       page: 0,
       rowsPerPage: 5,
     }
+    console.log("NotesTable STATE ", this.state)
   }
 
   handleRequestSort = (event, property) => {
@@ -314,20 +359,47 @@ class NotesTable extends React.Component {
     this.setState({ rowsPerPage: event.target.value })
   }
 
+  updateShowProp = prop => {
+    const objectKey = Object.keys(prop).map(key => key)[0]
+    const objectValue = Object.values(prop).map(val => val)[0]
+    let columnHeaders = this.state.columnHeaders
+    const headerIndex = columnHeaders.findIndex(function(c) {
+      return c.id === objectKey
+    })
+    let columnHeaderData = columnHeaders[headerIndex]
+    columnHeaderData.show = objectValue
+    columnHeaders.splice(headerIndex, 1, columnHeaderData)
+    this.setState({
+      columnHeaders: columnHeaders,
+    })
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1
 
   render() {
-    const { classes } = this.props
+    const { classes, title } = this.props
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
 
     return (
       <Paper className={classes.root}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar
+          title={title}
+          numSelected={selected.length}
+          columnHeaders={this.state.columnHeaders}
+          updateShowProp={prop => {
+            console.log("ok we made it here. very ugly ", prop)
+            this.updateShowProp(prop)
+          }}
+        />
+
         <div className={classes.tableWrapper}>
           <Table className={classes.table} aria-labelledby="tableTitle">
             <EnhancedTableHead
+              columnHeaders={this.state.columnHeaders.filter(
+                header => header.show === true
+              )}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -344,21 +416,44 @@ class NotesTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      onClick={event => this.handleClick(event, n.id)}
+                      // onClick={event => this.handleClick(event, n.id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
                       key={n.id}
                       selected={isSelected}>
                       <TableCell padding="checkbox">
-                        <Checkbox checked={isSelected} />
+                        <Checkbox
+                          checked={isSelected}
+                          color="primary"
+                          onClick={event => this.handleClick(event, n.id)}
+                        />
                       </TableCell>
-                      <TableCell component="th" scope="row" padding="none">
+
+                      {this.state.columnHeaders
+                        .filter(header => header.show === true)
+                        .map((cellHeader, idx) => {
+                          console.group("cellHeader Group")
+                          console.log("cellHeader ", cellHeader)
+                          console.log("n? ", n)
+                          console.groupEnd()
+                          return (
+                            <TableCell
+                              numeric={cellHeader.numeric}
+                              style={{ minWidth: "90px" }}
+                              component={cellHeader.tableRenderKey}
+                              padding={idx === 0 ? "dense" : "dense"}>
+                              {n[cellHeader.id]}
+                            </TableCell>
+                          )
+                        })}
+
+                      {/* <TableCell component="th" scope="row" padding="none">
                         {n.Name}
                       </TableCell>
                       <TableCell>{n.Description}</TableCell>
                       <TableCell>{n.Created}</TableCell>
-                      <TableCell>{n.LastEdited}</TableCell>
+                      <TableCell>{n.LastEdited}</TableCell> */}
                       {/* <TableCell numeric>{n.Description}</TableCell> */}
                     </TableRow>
                   )

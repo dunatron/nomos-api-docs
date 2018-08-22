@@ -28,6 +28,7 @@ const styles = theme => ({
 class AddMethodNote extends Component {
   state = {
     Name: "",
+    Description: "",
     adding: false,
     addingText: "",
     added: false,
@@ -67,6 +68,14 @@ class AddMethodNote extends Component {
                 onChange={this.handleChange("Name")}
                 margin="normal"
               />
+              <TextField
+                id="noteDescription"
+                label="Note Description"
+                className={classes.textField}
+                value={this.state.Description}
+                onChange={this.handleChange("Description")}
+                margin="normal"
+              />
               <Button
                 className={classes.button}
                 variant="raised"
@@ -90,7 +99,7 @@ class AddMethodNote extends Component {
 
   _createNote = async e => {
     e.preventDefault()
-    const { Name } = this.state
+    const { Name, Description } = this.state
     const { methodID } = this.props
     this.setState({
       adding: true,
@@ -101,7 +110,7 @@ class AddMethodNote extends Component {
       variables: {
         methodID: methodID,
         name: Name,
-        description: "Hello",
+        description: Description,
       },
       // update: (store, { data: { createCategory } }) => {
       //   const data = store.readQuery({ query: ALL_API_CATEGORIES_WITH_DATA })

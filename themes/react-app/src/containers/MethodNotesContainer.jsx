@@ -20,6 +20,42 @@ export const GET_METHOD_NOTES = gql`
     }
   }
 `
+const COLUMN_HEADERS = [
+  {
+    id: "Name",
+    numeric: false,
+    disablePadding: true,
+    label: "Name",
+    show: true,
+    tableRenderKey: "th",
+  },
+  {
+    id: "Description",
+    numeric: false,
+    disablePadding: false,
+    label: "Description",
+    show: false,
+    tableRenderKey: "td",
+  },
+  {
+    id: "Created",
+    numeric: false,
+    disablePadding: false,
+    label: "created",
+    show: false,
+    tableRenderKey: "td",
+  },
+  {
+    id: "LastEdited",
+    numeric: false,
+    disablePadding: false,
+    label: "last edited",
+    show: false,
+    tableRenderKey: "td",
+  },
+  // { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
+  // { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
+]
 /**
  * NOTES: Whenever the methodID changes you can have it so the component does another
  * query. Props a good thing even if we do the below route... do both
@@ -50,23 +86,13 @@ class MethodNotesContainer extends Component {
 
     return (
       <div>
-        <h2>Notes For : {Name}</h2>
-
-        {MethodNotes &&
-          MethodNotes.map(({ Name, Description }) => {
-            return <div>Note: {Name}</div>
-          })}
-
-        <h2>Make this table take key values.</h2>
-        <p>
-          Probably actually pass the headers and content in through the
-          containers..
-        </p>
-        <p>
-          the other option is to render key value pairs and for a object value
-          you could display a json string. Or drill into it{" "}
-        </p>
-        {MethodNotes && <NotesTable notes={MethodNotes} />}
+        {MethodNotes && (
+          <NotesTable
+            notes={MethodNotes}
+            columnHeaders={COLUMN_HEADERS}
+            title={`${Name} Notes`}
+          />
+        )}
       </div>
     )
   }
