@@ -442,7 +442,8 @@ class NotesTable extends React.Component {
                               numeric={cellHeader.numeric}
                               style={{ minWidth: "90px" }}
                               component={cellHeader.tableRenderKey}
-                              padding={idx === 0 ? "dense" : "dense"}>
+                              padding={idx === 0 ? "dense" : "dense"}
+                              {...cellHeader.tableRenderProps}>
                               {n[cellHeader.id]}
                             </TableCell>
                           )

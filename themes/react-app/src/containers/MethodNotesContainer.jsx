@@ -36,6 +36,12 @@ const COLUMN_HEADERS = [
     label: "Description",
     show: false,
     tableRenderKey: "td",
+    tableRenderProps: {
+      style: {
+        minWidth: "220px",
+        color: "#004851",
+      },
+    },
   },
   {
     id: "Created",
