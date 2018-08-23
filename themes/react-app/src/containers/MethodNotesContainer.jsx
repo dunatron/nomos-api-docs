@@ -99,7 +99,13 @@ class MethodNotesContainer extends Component {
           })}
         {MethodNotes && (
           <NotesTable
-            notes={MethodNotes}
+            // notes={MethodNotes}
+            notes={MethodNotes.map((note, idx) => {
+              return {
+                ...note,
+                id: idx,
+              }
+            })}
             columnHeaders={COLUMN_HEADERS}
             title={`${Name} Notes`}
           />

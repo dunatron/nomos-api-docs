@@ -395,7 +395,7 @@ class NotesTable extends React.Component {
   isSelected = id => this.state.selected.indexOf(id) !== -1
 
   render() {
-    const { classes, title } = this.props
+    const { classes, title, notes } = this.props
     const { data, order, orderBy, selected, rowsPerPage, page } = this.state
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
@@ -426,7 +426,7 @@ class NotesTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {data
+              {notes
                 .sort(getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
