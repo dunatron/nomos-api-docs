@@ -19,6 +19,7 @@ import DeleteIcon from "material-ui-icons/Delete"
 import FilterListIcon from "material-ui-icons/FilterList"
 import { lighten } from "material-ui/styles/colorManipulator"
 import CheckBoxSelection from "./Inputs/CheckBoxSelection"
+import DialogPopup from "./DialogPopup"
 
 let counter = 0
 // function createData(name, calories, fat, carbs, protein) {
@@ -269,6 +270,23 @@ const styles = theme => ({
   },
 })
 
+const CellContent = ({ content, limitChar }) => {
+  if (limitChar) {
+    const trimmedString =
+      content.length > limitChar ? (
+        <div>
+          {content.substring(0, limitChar - 3)}
+          <DialogPopup text={"..."} content={content} />
+        </div>
+      ) : (
+        content
+      )
+    return trimmedString
+  }
+
+  return content
+}
+
 class NotesTable extends React.Component {
   constructor(props) {
     super(props)
@@ -444,7 +462,17 @@ class NotesTable extends React.Component {
                               component={cellHeader.tableRenderKey}
                               padding={idx === 0 ? "dense" : "dense"}
                               {...cellHeader.tableRenderProps}>
-                              {n[cellHeader.id]}
+                              <CellContent
+                                content={n[cellHeader.id]}
+                                limitChar={cellHeader.limitChar}
+                              />
+                              {/* {cellHeader.limitChar
+                                ? n[cellHeader.id].substring(
+                                    0,
+                                    cellHeader.limitChar
+                                  )
+                                : n[cellHeader.id]}
+                              {n[cellHeader.id]} */}
                             </TableCell>
                           )
                         })}

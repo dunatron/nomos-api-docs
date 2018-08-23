@@ -36,6 +36,7 @@ const COLUMN_HEADERS = [
     label: "Description",
     show: false,
     tableRenderKey: "td",
+    limitChar: 120,
     tableRenderProps: {
       style: {
         minWidth: "220px",
@@ -92,6 +93,10 @@ class MethodNotesContainer extends Component {
 
     return (
       <div>
+        {MethodNotes &&
+          MethodNotes.map((Note, idx) => {
+            return <div key={idx}>{Note.Description}</div>
+          })}
         {MethodNotes && (
           <NotesTable
             notes={MethodNotes}
