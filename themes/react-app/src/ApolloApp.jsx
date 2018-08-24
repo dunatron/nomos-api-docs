@@ -49,13 +49,11 @@ const client = createClient(localStorage.getItem('jwt'));
 const theme = createMuiTheme(customTheme);
 
 const ApolloApp = ({token}) => (
-
     <ApolloProvider client={client}>
       <MuiThemeProvider theme={theme}>
         <App/>
       </MuiThemeProvider>
     </ApolloProvider>
-
 );
 
 export default connect(

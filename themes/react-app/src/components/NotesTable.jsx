@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Fragment } from "react"
 import classNames from "classnames"
 import PropTypes from "prop-types"
 import { withStyles } from "material-ui/styles"
@@ -20,24 +20,16 @@ import FilterListIcon from "material-ui-icons/FilterList"
 import { lighten } from "material-ui/styles/colorManipulator"
 import CheckBoxSelection from "./Inputs/CheckBoxSelection"
 import DialogPopup from "./DialogPopup"
+import SearchFilter from "./Inputs/SearchFilter"
+import SelectOption from "./Inputs/SelectOption"
+import MultiSelect from "./Inputs/MultiSelect"
 
 let counter = 0
-// function createData(name, calories, fat, carbs, protein) {
-//   counter += 1
-//   return { id: counter, name, calories, fat, carbs, protein }
-// }
+
 function createData({ ID, Name, Description, Created, LastEdited }) {
   counter += 1
   return { id: counter, ID, Name, Description, Created, LastEdited }
 }
-
-/**
- * Need to also sort by dates. Pull in Moment for this.
- * also extract most of this functionality to props.
- * 1. const rows can pe passed to it surely.
- * 2. <TableCell>{n.Description}</TableCell> should loop over the fields. Do it all by config
- * and get all the places
- */
 
 function desc(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -54,52 +46,6 @@ function getSorting(order, orderBy) {
     ? (a, b) => desc(a, b, orderBy)
     : (a, b) => -desc(a, b, orderBy)
 }
-
-const rowsOld = [
-  {
-    id: "name",
-    numeric: false,
-    disablePadding: true,
-    label: "Dessert (100g serving)",
-  },
-  { id: "calories", numeric: true, disablePadding: false, label: "Calories" },
-  { id: "fat", numeric: true, disablePadding: false, label: "Fat (g)" },
-  { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-  { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
-]
-
-// const COLUMN_HEADERS = [
-//   {
-//     id: "Name",
-//     numeric: false,
-//     disablePadding: true,
-//     label: "Name",
-//     show: true,
-//   },
-//   {
-//     id: "Description",
-//     numeric: false,
-//     disablePadding: false,
-//     label: "Description",
-//     show: false,
-//   },
-//   {
-//     id: "Created",
-//     numeric: false,
-//     disablePadding: false,
-//     label: "created",
-//     show: true,
-//   },
-//   {
-//     id: "LastEdited",
-//     numeric: false,
-//     disablePadding: false,
-//     label: "last edited",
-//     show: false,
-//   },
-//   // { id: "carbs", numeric: true, disablePadding: false, label: "Carbs (g)" },
-//   // { id: "protein", numeric: true, disablePadding: false, label: "Protein (g)" },
-// ]
 
 class EnhancedTableHead extends React.Component {
   createSortHandler = property => event => {
@@ -188,9 +134,9 @@ const toolbarStyles = theme => ({
 })
 
 const FilterBar = props => {
+  console.log("Filter Bar props ", props)
   return (
     <div>
-      <h3>Here is the Filter Bar</h3>
       <CheckBoxSelection
         options={props.columnHeaders}
         handleOptionChange={optionObj => {
@@ -198,12 +144,51 @@ const FilterBar = props => {
           props.updateShowProp(optionObj)
         }}
       />
+      <MultiSelect
+        values={props.columnHeaders
+          .filter(header => header.show === true)
+          .map(h => {
+            return h.id
+          })}
+        options={props.columnHeaders.map(header => {
+          return {
+            name: header.label,
+            value: header.id,
+          }
+        })}
+        handleChange={values => props.updateShowValues(values)}
+      />
+      <SelectOption
+        label="Column Filter"
+        value={props.searchCol}
+        selectID={"SearchFilter"}
+        handleChange={selected => props.updateSearchCol(selected)}
+        options={props.columnHeaders.map((header, hIdx) => {
+          return {
+            name: header.label,
+            value: header.id,
+          }
+        })}
+      />
+      <SearchFilter
+        value={props.searchValue}
+        handleChange={val => props.updateSearch(val)}
+      />
     </div>
   )
 }
 
 let EnhancedTableToolbar = props => {
-  const { numSelected, classes, columnHeaders, title } = props
+  const {
+    numSelected,
+    classes,
+    columnHeaders,
+    title,
+    searchValue,
+    searchCol,
+    updateSearchCol,
+    updateShowValues,
+  } = props
 
   return (
     <div>
@@ -242,6 +227,11 @@ let EnhancedTableToolbar = props => {
       <Toolbar>
         <FilterBar
           columnHeaders={columnHeaders}
+          searchCol={searchCol}
+          updateSearchCol={selected => updateSearchCol(selected)}
+          searchValue={searchValue}
+          updateShowValues={values => updateShowValues(values)}
+          updateSearch={val => props.updateSearch(val)}
           updateShowProp={prop => props.updateShowProp(prop)}
         />
       </Toolbar>
@@ -305,28 +295,15 @@ class NotesTable extends React.Component {
       order: "asc",
       orderBy: "calories",
       selected: [],
+      searchCol: "",
+      withSearch: true,
+      searchValue: "",
       filterProps: [...displayColumns], // Ok when we click on filter Icon the FilterBar will update the state here
       data: notesData,
       columnHeaders: propColumnHeaders,
-      // data: [
-      //   createData("Cupcake", 305, 3.7, 67, 4.3),
-      //   createData("Donut", 452, 25.0, 51, 4.9),
-      //   createData("Eclair", 262, 16.0, 24, 6.0),
-      //   createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-      //   createData("Gingerbread", 356, 16.0, 49, 3.9),
-      //   createData("Honeycomb", 408, 3.2, 87, 6.5),
-      //   createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-      //   createData("Jelly Bean", 375, 0.0, 94, 0.0),
-      //   createData("KitKat", 518, 26.0, 65, 7.0),
-      //   createData("Lollipop", 392, 0.2, 98, 0.0),
-      //   createData("Marshmallow", 318, 0, 81, 2.0),
-      //   createData("Nougat", 360, 19.0, 9, 37.0),
-      //   createData("Oreo", 437, 18.0, 63, 4.0),
-      // ],
       page: 0,
       rowsPerPage: 5,
     }
-    console.log("NotesTable STATE ", this.state)
   }
 
   handleRequestSort = (event, property) => {
@@ -392,13 +369,75 @@ class NotesTable extends React.Component {
     })
   }
 
+  updateShowValues = values => {
+    let columnHeaders = this.state.columnHeaders
+
+    columnHeaders.map(header => {
+      return {
+        ...header,
+        show: values.includes(header.id),
+      }
+    })
+
+    this.setState({
+      columnHeaders: columnHeaders,
+    })
+
+    // for (const val of values) {
+    //   console.log("updateShowValues val ", val)
+    //   const headerIndex = columnHeaders.findIndex(function(c) {
+    //     return c.id === val
+    //   })
+    //   console.log(" Found The right State Index I guess ", headerIndex)
+    //   let columnHeaderData = columnHeaders[headerIndex]
+    //   columnHeaderData.show = true
+    //   columnHeaders.splice(headerIndex, 1, columnHeaderData)
+    //   this.setState({
+    //     columnHeaders: columnHeaders,
+    //   })
+    // }
+  }
+
+  updateSearch = val => {
+    this.setState({
+      searchValue: val,
+    })
+  }
+
+  updateSearchCol = col => {
+    this.setState({
+      searchCol: col,
+    })
+  }
+
+  filterNotes = (notes, searchCol, searchVal) => {
+    const filteredNotes = notes.filter(n =>
+      n[searchCol].toLowerCase().includes(searchVal.toLowerCase())
+    )
+    return filteredNotes
+  }
+
   isSelected = id => this.state.selected.indexOf(id) !== -1
 
   render() {
     const { classes, title, notes } = this.props
-    const { data, order, orderBy, selected, rowsPerPage, page } = this.state
+    const {
+      data,
+      order,
+      orderBy,
+      selected,
+      rowsPerPage,
+      page,
+      searchCol,
+      searchValue,
+    } = this.state
     const emptyRows =
       rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage)
+
+    let processedNotes =
+      searchValue.length > 2 && searchCol.length > 2
+        ? this.filterNotes(notes, searchCol, searchValue)
+        : notes
 
     return (
       <Paper className={classes.root}>
@@ -406,10 +445,12 @@ class NotesTable extends React.Component {
           title={title}
           numSelected={selected.length}
           columnHeaders={this.state.columnHeaders}
-          updateShowProp={prop => {
-            console.log("ok we made it here. very ugly ", prop)
-            this.updateShowProp(prop)
-          }}
+          searchCol={this.state.searchCol}
+          updateSearchCol={selected => this.updateSearchCol(selected)}
+          searchValue={this.state.searchValue}
+          updateSearch={val => this.updateSearch(val)}
+          updateShowProp={prop => this.updateShowProp(prop)}
+          updateShowValues={values => this.updateShowValues(values)}
         />
 
         <div className={classes.tableWrapper}>
@@ -426,7 +467,7 @@ class NotesTable extends React.Component {
               rowCount={data.length}
             />
             <TableBody>
-              {notes
+              {processedNotes
                 .sort(getSorting(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map(n => {
@@ -434,7 +475,6 @@ class NotesTable extends React.Component {
                   return (
                     <TableRow
                       hover
-                      // onClick={event => this.handleClick(event, n.id)}
                       role="checkbox"
                       aria-checked={isSelected}
                       tabIndex={-1}
@@ -466,24 +506,9 @@ class NotesTable extends React.Component {
                                 content={n[cellHeader.id]}
                                 limitChar={cellHeader.limitChar}
                               />
-                              {/* {cellHeader.limitChar
-                                ? n[cellHeader.id].substring(
-                                    0,
-                                    cellHeader.limitChar
-                                  )
-                                : n[cellHeader.id]}
-                              {n[cellHeader.id]} */}
                             </TableCell>
                           )
                         })}
-
-                      {/* <TableCell component="th" scope="row" padding="none">
-                        {n.Name}
-                      </TableCell>
-                      <TableCell>{n.Description}</TableCell>
-                      <TableCell>{n.Created}</TableCell>
-                      <TableCell>{n.LastEdited}</TableCell> */}
-                      {/* <TableCell numeric>{n.Description}</TableCell> */}
                     </TableRow>
                   )
                 })}
